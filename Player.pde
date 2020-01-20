@@ -5,6 +5,7 @@ class Player {
   int yvel = 0;
   boolean alive = true;
   ArrayList<Villain> villainsKilled = new ArrayList<Villain>();
+  ArrayList<Platform> disappearedPlatforms = new ArrayList<Platform>();
   final int xlen = 40;
   final int ylen = 50;
   final int accel_g = 1;
@@ -73,9 +74,18 @@ class Player {
     // updates the player position and velocity on collision with a platform
     for (Platform plat : platforms)
       if ((ypos + ylen >= plat.ypos - 10) && (ypos + ylen <= plat.ypos + 25) && (yvel >= 0) && (xpos + xlen + 5 >= plat.xpos) && (xpos <= plat.xpos + Platform.len + 5)) {
+        int origYvel = yvel;
         yvel = -20;
-        if (plat.will_disappear == 1)
-          plat.disappear();
+        if (plat.will_disappear == 1) {
+          boolean hasHitBefore = false;
+          for (Platform disappeared : disappearedPlatforms)
+            if(disappeared.equals(plat))
+              hasHitBefore = true;
+          if (!hasHitBefore)
+            disappearedPlatforms.add(plat);
+          else
+            yvel = origYvel;
+        }
       }
     
     // checks collison with a villain
