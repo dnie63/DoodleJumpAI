@@ -25,10 +25,5 @@ class Villain {
     
     xpos += speed * direction;
   }
-        
-  void disappear () {
-    xpos = 600;
-    speed = 0;
-  }
   
 }

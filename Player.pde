@@ -4,6 +4,7 @@ class Player {
   int ypos = 475;
   int yvel = 0;
   boolean alive = true;
+  ArrayList<Villain> villainsKilled = new ArrayList<Villain>();
   final int xlen = 40;
   final int ylen = 50;
   final int accel_g = 1;
@@ -83,15 +84,22 @@ class Player {
       // if on top, kills the villain and jumps up (more so than usual also)
       // self.left <= vil.right, right >= left, bottom >=(below) top bound, bottom <=(above) bottom bound
       if ((xpos <= vil.xpos + Villain.len) && (xpos + xlen >= vil.xpos - 10) && (ypos + ylen >= vil.ypos - 10) && (ypos + ylen <= vil.ypos + Villain.len * 2/5) && (yvel >= 0)) {
-        vil.disappear();
+        villainsKilled.add(vil);
         yvel = -20 - 5;
       }
       
       // else if, player dies
       // left <= right, right >= left, top <=(above) bottom, bottom >=(below) top
-      else if ((xpos <= vil.xpos + Villain.len) && (xpos + xlen >= vil.xpos - 10) && (ypos <= vil.ypos + Villain.len - 10) && (ypos + ylen >= vil.ypos))
+      else if ((xpos <= vil.xpos + Villain.len) && (xpos + xlen >= vil.xpos - 10) && (ypos <= vil.ypos + Villain.len - 10) && (ypos + ylen >= vil.ypos)) {
         alive = false;
-    
+        
+        // revives the player if this player has killed this villain before
+        // this logic is necessary for a given villain to affect every player on the screen
+        for (Villain killed : villainsKilled)
+          if (killed.equals(vil))
+            alive = true;
+      }
+      
     // updates the player's vertical position each frame based on its y velocity
     // and determines if the player is still alive afterwards
     ypos += yvel;
