@@ -2,63 +2,48 @@ class Population {
     
   int popSize;
   ArrayList<Player> players;
-  ArrayList<Game> games;
-  int currPlayerGame = 0;
+  Game game;
   int gen = 1;
   int prevGensHigh = 0;
   int genOfPrevGensHigh = 0;
-  int currGenHigh = 0;
   float mutationRate = 0.1;
   
-  // initializes a population of players and corresponding games to play in
+  // initializes a population of players and the game to play in
   Population (int size) {
     popSize = size;
     players = new ArrayList<Player>();
     for (int i = 0; i < popSize; i++)
       players.add(new Player());
       
-    games = new ArrayList<Game>();
-    for (int i = 0; i < popSize; i++)
-      games.add(new Game());
+    game = new Game();
   }
   
   // updates the state of the population of players
   void update () {
-    Player currPlayer = players.get(currPlayerGame);
-    Game currGame = games.get(currPlayerGame);
     
-    // plays one step of one player/game in the current generation
-    // goes to the next game/player if the current game/player is over
-    if (currGame.play(currPlayer, gen, currPlayerGame, popSize, prevGensHigh, currGenHigh, genOfPrevGensHigh)) {
-      currPlayerGame += 1;
-      
-      if(currPlayer.score > currGenHigh)
-        currGenHigh = currPlayer.score;
-      
-      // goes to the next generation if that was the last player of the current generation
-      if (currPlayerGame == popSize) {
-        calculateFitness();
-        breed();
-        
-        if (currGenHigh > prevGensHigh) {
-          prevGensHigh = currGenHigh;
-          genOfPrevGensHigh = gen;
-        }
-        gen += 1;
-        currPlayerGame = 0;
-        currGenHigh = 0;
+    // plays one step of all players in the current generation
+    // and goes to the next generation if all players are dead
+    if (game.play(players, gen, prevGensHigh, genOfPrevGensHigh, popSize)) {
+      calculateFitness();
+      players = breed();
+      if (game.highestScore > prevGensHigh) {
+        prevGensHigh = game.highestScore;
+        genOfPrevGensHigh = gen;
       }
+      gen += 1;
+      game = new Game();
     }
   }
   
-  // calculates the fitness of every single player
+  // calculates the fitness of every player
   void calculateFitness () {
     for (Player player : players)
       player.calculateFitness();
   }
   
   // combines natural selection, crossover, and mutation
-  void breed () {
+  // and returns the next generation of players
+  ArrayList<Player> breed () {
     ArrayList<Player> newPlayers= new ArrayList<Player>();
     
     // directly add a clone of the best player into the next generation without crossover/mutation
@@ -73,17 +58,13 @@ class Population {
       newPlayers.add(child);
     }
     
-    // next generation of players and their corresponding games
-    players = newPlayers;
-    games = new ArrayList<Game>();
-    for (int i = 0; i < popSize; i++)
-      games.add(new Game());
+    return newPlayers;
   }
   
   // returns the index of the best performing player of the current generation
   int getBestPlayerIndex () {
     int bestIndex = 0;
-    int bestFitness = players.get(0).fitness;
+    float bestFitness = players.get(0).fitness;
     for (int i = 1; i < popSize; i++)
       if (players.get(i).fitness > bestFitness) {
         bestIndex = i;
@@ -96,11 +77,11 @@ class Population {
   Player naturalSelection () {
     
     // uses the running sum model
-    int totalFitness = 0;
+    float totalFitness = 0;
     for (Player player : players)
       totalFitness += player.fitness;
-    int randomVal = (int) (Math.random() * totalFitness);
-    int runningSum = 0;
+    float randomVal = (float) (Math.random() * totalFitness);
+    float runningSum = 0;
     for (Player player : players) {
       runningSum += player.fitness;
       if (runningSum > randomVal)
