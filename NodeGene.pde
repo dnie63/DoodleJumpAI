@@ -3,7 +3,7 @@ class NodeGene {
   int number;
   float inputSum;
   ArrayList<ConnectionGene> outputConnections = new ArrayList<ConnectionGene>();
-  int layer;
+  int layer = 0;                                                                       // the 0th layer is the input layer
   
   NodeGene (int number) {
     this.number = number;
