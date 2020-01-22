@@ -1,12 +1,13 @@
 class NodeGene {
   
   int number;
-  float inputSum;
+  float inputSum = 0;
   ArrayList<ConnectionGene> outputConnections = new ArrayList<ConnectionGene>();
-  int layer = 0;                                                                       // the 0th layer is the input layer
+  int layer;                                                                       // the 0th layer is the input layer
   
-  NodeGene (int number) {
+  NodeGene (int number, int layer) {
     this.number = number;
+    this.layer = layer;
   }
   
   // this node sends its output value to every node that it's connected to
@@ -48,9 +49,7 @@ class NodeGene {
   }
   
   NodeGene clone () {
-    NodeGene clone = new NodeGene(number);
-    clone.layer = layer;
-    return clone;
+    return new NodeGene(number, layer);
   }
   
 }
