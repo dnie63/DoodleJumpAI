@@ -31,8 +31,4 @@ class ConnectionGene {
     }
   }
   
-  ConnectionGene clone (NodeGene inputNode, NodeGene outputNode) {
-    return new ConnectionGene(inputNode, outputNode, weight, innovationNo);
-  }
-  
 }
