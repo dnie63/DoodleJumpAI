@@ -11,13 +11,17 @@ class Player {
   final int accel_g = 1;
   final color colour = color(153, 90, 233);
   
-  NeuralNet brain = new NeuralNet(115, 32, 3);
+  Genome brain;
   int[] moves = {-1, 0, 1};
   
   float fitness;
   
+  Player (Genome brain) {
+    this.brain = brain;
+  }
+  
   int think (ArrayList<Platform> platforms, ArrayList<Villain> villains) {
-    float[] inputs = new float[brain.iNodes];
+    float[] inputs = new float[115];
     
     // inputs from the player
     inputs[0] = xpos;
@@ -51,7 +55,7 @@ class Player {
       index += 5;
     }
     
-    float[] moveProbabilities = brain.output(inputs);
+    float[] moveProbabilities = brain.evaluateNetwork(inputs);
     int maxIndex = 0;
     float maxProb = moveProbabilities[0];
     for (int i = 1; i < moveProbabilities.length; i++)
@@ -134,13 +138,6 @@ class Player {
   // calculates the fitness of the player
   void calculateFitness () {
     fitness = 1.0/ypos;
-  }
-  
-  // returns a completely new Player with the same neural network configuration
-  Player clone() {
-    Player clone = new Player();
-    clone.brain = brain.clone();
-    return clone;
   }
   
 }

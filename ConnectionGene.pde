@@ -1,34 +1,66 @@
-class ConnectionGene {
-  
-  NodeGene inputNode;
-  NodeGene outputNode;
-  float weight;
-  boolean enabled = true;
-  int innovationNo;
-  
-  ConnectionGene (NodeGene inputNode, NodeGene outputNode, float weight, int innovationNo) {
-    this.inputNode = inputNode;
-    this.outputNode = outputNode;
-    this.weight = weight;
-    this.innovationNo = innovationNo;
-  }
-  
-  void mutateWeight () {
-    
-    // completely changes the weight randomly 10% of the time
-    if (random(1) < 0.1)
-      weight = random(-1, 1);
-    
-    // changes the weight slightly the other 90% of the time
-    else {
-      weight += randomGaussian()/50;
-      
-      // keep the weight between -1 and 1 inclusive
-      if (weight > 1)
-        weight = 1;
-      else if (weight < -1)
-        weight = -1;
+public class ConnectionGene {
+
+    private int into,out, innovation;
+    private float weight;
+    private boolean enabled;
+
+    public ConnectionGene(int into, int out, int innovation, float weight, boolean enabled) {
+        this.into = into;
+        this.out = out;
+        this.innovation = innovation;
+        this.weight = weight;
+        this.enabled = enabled;
     }
-  }
-  
+
+    // Copy
+    public ConnectionGene(ConnectionGene connectionGene){
+        if(connectionGene!=null) {
+            this.into = connectionGene.getInto();
+            this.out = connectionGene.getOut();
+            this.innovation = connectionGene.getInnovation();
+            this.weight = connectionGene.getWeight();
+            this.enabled = connectionGene.isEnabled();
+        }
+    }
+
+    public int getInto() {
+        return into;
+    }
+
+    public int getOut() {
+        return out;
+    }
+
+    public int getInnovation() {
+        return innovation;
+    }
+
+    public float getWeight() {
+        return weight;
+    }
+
+    public void setWeight(float weight) {
+        this.weight = weight;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+
+    @Override
+    public String toString() {
+/*        return "ConnectionGene{" +
+                "into=" + into +
+                ", out=" + out +
+                ", innovation=" + innovation +
+                ", weight=" + weight +
+                ", enabled=" + enabled +
+                '}';*/
+        return into+","+out+","+weight+","+enabled;
+    }
 }
