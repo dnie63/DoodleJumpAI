@@ -104,12 +104,12 @@ public class Genome implements Comparable {
         TreeMap<Integer, ConnectionGene> geneMap2 = new TreeMap<Integer, ConnectionGene>();
 
         for(ConnectionGene con: parent1.connectionGeneList){
-            assert  !geneMap1.containsKey(con.getInnovation());             //TODO Remove for better performance
+            //assert  !geneMap1.containsKey(con.getInnovation());             //TODO Remove for better performance
             geneMap1.put(con.getInnovation(), con);
         }
 
         for(ConnectionGene con: parent2.connectionGeneList){
-            assert  !geneMap2.containsKey(con.getInnovation());             //TODO Remove for better performance
+            //assert  !geneMap2.containsKey(con.getInnovation());             //TODO Remove for better performance
             geneMap2.put(con.getInnovation(), con);
         }
 
