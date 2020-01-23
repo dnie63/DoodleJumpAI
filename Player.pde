@@ -20,42 +20,19 @@ class Player {
     this.brain = brain;
   }
   
-  int think (ArrayList<Platform> platforms, ArrayList<Villain> villains) {
-    float[] inputs = new float[115];
-    
-    // inputs from the player
-    inputs[0] = xpos;
-    inputs[1] = ypos;
-    inputs[2] = xlen;
-    inputs[3] = ylen;
-    inputs[4] = accel_g;
-    inputs[5] = yvel;
-    
-    // inputs from the villains
-    inputs[6] = villains.size();
-    inputs[7] = Villain.len;
-    if (villains.size() > 0) {
-      inputs[8] = villains.get(0).speed;
-      inputs[9] = villains.get(0).direction;
-      inputs[10] = villains.get(0).xpos;
-      inputs[11] = villains.get(0).ypos;
-    }
-    
-    // inputs from the platforms
-    inputs[12] = platforms.size();
-    inputs[13] = Platform.thiccness;
-    inputs[14] = Platform.len;
-    int index = 15;
-    for (Platform plat : platforms) {
-      inputs[index] = plat.will_disappear;
-      inputs[index + 1] = plat.xpos;
-      inputs[index + 2] = plat.ypos;
-      inputs[index + 3] = plat.speed;
-      inputs[index + 4] = plat.direction;
-      index += 5;
+  int think () {
+    loadPixels();
+    float[] inputs = new float[pixels.length/100];
+    int x = 0;
+    int y = 0;
+    for (int i = 0; i < inputs.length; i++) {
+      x = (i*10)%500;
+      y = (int) i/50;
+      inputs[i] = -1 * pixels[y*width + x];
     }
     
     float[] moveProbabilities = brain.evaluateNetwork(inputs);
+    println(moveProbabilities);
     int maxIndex = 0;
     float maxProb = moveProbabilities[0];
     for (int i = 1; i < moveProbabilities.length; i++)
@@ -70,7 +47,7 @@ class Player {
   void update (ArrayList<Platform> platforms, ArrayList<Villain> villains) {
     
     // changes the horizontal velocities based on brain's decision
-    xpos += think(platforms, villains) * 7;
+    xpos += think() * 7;
       
     // changes the vertical velocity based on acceleration due to gravity
     yvel += accel_g;

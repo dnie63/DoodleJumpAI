@@ -2,52 +2,18 @@ import javax.management.RuntimeErrorException;
 import java.io.*;
 import java.util.*;
 
-/**
- * Created by vishnughosh on 28/02/17.
- */
 public class Genome implements Comparable {
+    
     private Player player;
     private Random rand = new Random();
-    private float fitness;                                          // Global Percentile Rank (higher the better)
+    private float fitness;                                                                            // Global Percentile Rank (higher the better)
     private float points;
     private ArrayList<ConnectionGene> connectionGeneList = new ArrayList<ConnectionGene>();           // DNA- MAin archive of gene information
-    private TreeMap<Integer, NodeGene> nodes = new TreeMap<Integer, NodeGene>();                          // Generated while performing network operation
-    private float adjustedFitness;                                      // For number of child to breed in species
-
+    private TreeMap<Integer, NodeGene> nodes = new TreeMap<Integer, NodeGene>();                      // Generated while performing network operation
+    private float adjustedFitness;                                                                    // For number of child to breed in species
     private HashMap<MutationKeys, Float> mutationRates = new HashMap<MutationKeys, Float>();
-    
-    public void setPlayer (Player player) {
-        this.player = player;
-    }
-    
-    public Player getPlayer () {
-        return player;
-    }
 
-    /*    private class MutationRates{
-            float STEPS;
-            float PERTURB_CHANCE;
-            float WEIGHT_CHANCE;
-            float WEIGHT_MUTATION_CHANCE;
-            float NODE_MUTATION_CHANCE;
-            float CONNECTION_MUTATION_CHANCE;
-            float BIAS_CONNECTION_MUTATION_CHANCE;
-            float DISABLE_MUTATION_CHANCE;
-            float ENABLE_MUTATION_CHANCE;
-             MutationRates() {
-                this.STEPS = NEAT_Config.STEPS;
-                this.PERTURB_CHANCE = NEAT_Config.PERTURB_CHANCE;
-                this.WEIGHT_CHANCE = NEAT_Config.WEIGHT_CHANCE;
-                this.WEIGHT_MUTATION_CHANCE = NEAT_Config.WEIGHT_MUTATION_CHANCE;
-                this.NODE_MUTATION_CHANCE = NEAT_Config.NODE_MUTATION_CHANCE;
-                this.CONNECTION_MUTATION_CHANCE = NEAT_Config.CONNECTION_MUTATION_CHANCE;
-                this.BIAS_CONNECTION_MUTATION_CHANCE = NEAT_Config.BIAS_CONNECTION_MUTATION_CHANCE;
-                this.DISABLE_MUTATION_CHANCE = NEAT_Config.DISABLE_MUTATION_CHANCE;
-                this.ENABLE_MUTATION_CHANCE = NEAT_Config.ENABLE_MUTATION_CHANCE;
-            }
-        }*/
     public Genome(){
-
         this.mutationRates.put(MutationKeys.STEPS, NEAT_Config.STEPS);
         this.mutationRates.put(MutationKeys.PERTURB_CHANCE, NEAT_Config.PERTURB_CHANCE);
         this.mutationRates.put(MutationKeys.WEIGHT_CHANCE,NEAT_Config.WEIGHT_CHANCE);
@@ -60,18 +26,22 @@ public class Genome implements Comparable {
     }
 
     public Genome(Genome child) {
-
-        for (ConnectionGene c:child.connectionGeneList){
+        for (ConnectionGene c:child.connectionGeneList)
             this.connectionGeneList.add(new ConnectionGene(c));
-        }
 
         this.fitness = child.fitness;
         this.adjustedFitness = child.adjustedFitness;
 
         this.mutationRates = (HashMap<MutationKeys, Float>) child.mutationRates.clone();
-
     }
 
+    public void setPlayer (Player player) {
+        this.player = player;
+    }
+    
+    public Player getPlayer () {
+        return player;
+    }
 
     public float getFitness() {
         return fitness;
@@ -79,11 +49,6 @@ public class Genome implements Comparable {
 
     public void setFitness(float fitness) {
         this.fitness = fitness;
-    }
-
-    // Can remove below setter-getter after testing
-    public ArrayList<ConnectionGene> getConnectionGeneList() {
-        return connectionGeneList;
     }
 
     public void setConnectionGeneList(ArrayList<ConnectionGene> connectionGeneList) {
@@ -122,21 +87,21 @@ public class Genome implements Comparable {
         for(int key : allInnovations){
             ConnectionGene trait;
 
-            if(geneMap1.containsKey(key) && geneMap2.containsKey(key)){
+            if(geneMap1.containsKey(key) && geneMap2.containsKey(key)) {
                 if(rand.nextBoolean()){
                     trait = new ConnectionGene(geneMap1.get(key));
-                }else {
+                } else {
                     trait = new ConnectionGene(geneMap2.get(key));
                 }
 
-                if((geneMap1.get(key).isEnabled()!=geneMap2.get(key).isEnabled())){
+                if((geneMap1.get(key).isEnabled()!=geneMap2.get(key).isEnabled())) {
                     if( (rand.nextFloat()<0.75f ))
                         trait.setEnabled(false);
                     else
                         trait.setEnabled(true);
                 }
 
-            }else if(parent1.getFitness()==parent2.getFitness()){               // disjoint or excess and equal fitness
+            } else if(parent1.getFitness()==parent2.getFitness()) {               // disjoint or excess and equal fitness
                 if(geneMap1.containsKey(key))
                     trait = geneMap1.get(key);
                 else
@@ -146,18 +111,14 @@ public class Genome implements Comparable {
                     continue;
                 }
 
-            }else
+            } else
                 trait = geneMap1.get(key);
-
 
             child.connectionGeneList.add(trait);
         }
 
-
         return child;
-
     }
-
 
     public boolean isSameSpecies(Genome g2){
         Genome g1 = this;
@@ -214,12 +175,11 @@ public class Genome implements Comparable {
             delta = (NEAT_Config.EXCESS_COEFFICENT * excess + NEAT_Config.DISJOINT_COEFFICENT * disjoint) / N + (NEAT_Config.WEIGHT_COEFFICENT * weight) / matching;
 
         return delta < NEAT_Config.COMPATIBILITY_THRESHOLD;
-
     }
 
     private void generateNetwork() {
-
         nodes.clear();
+        
         //  Input layer
         for (int i = 0; i < NEAT_Config.INPUTS; i++) {
             nodes.put(i, new NodeGene(0));                    //Inputs
@@ -239,8 +199,6 @@ public class Genome implements Comparable {
                 nodes.put(con.getOut(), new NodeGene(0));
             nodes.get(con.getOut()).getIncomingCon().add(con);
         }
-
-
     }
 
     public float[] evaluateNetwork(float[] inputs) {

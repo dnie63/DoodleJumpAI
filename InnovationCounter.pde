@@ -9,4 +9,5 @@ public static class InnovationCounter {
         innovation++;
         return innovation;
     }
+    
 }

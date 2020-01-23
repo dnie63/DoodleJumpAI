@@ -3,22 +3,18 @@ import java.util.Collections;
 
 public class Pool {
 
-
     private ArrayList<Species> species = new ArrayList<Species>();
-    private float topFitness ;
+    private float topFitness = 0;
     private int poolStaleness = 0;
-
 
     public ArrayList<Species> getSpecies() {
         return species;
     }
 
     public void initializePool() {
-
         for (int i = 0; i < NEAT_Config.POPULATION; i++) {
             addToSpecies(new Genome());
         }
-
     }
 
     public void addToSpecies(Genome g) {
@@ -26,7 +22,6 @@ public class Pool {
             if (s.getGenomes().size() == 0)
                 continue;
             Genome g0 = s.getGenomes().get(0);
-//    System.out.println(s.genomes.size());
             if (g.isSameSpecies(g0)) {
                 s.getGenomes().add(g);
                 return;
@@ -35,30 +30,6 @@ public class Pool {
         Species childSpecies = new Species();
         childSpecies.getGenomes().add(g);
         species.add(childSpecies);
-    }
-
-    public void evaluateFitness() {         //For Testing
-        for (Species s : species)
-            for (Genome g : s.getGenomes()) {
-                float fitness = 0;
-                g.setFitness(0);
-                for (int i = 0; i < 2; i++)
-                    for (int j = 0; j < 2; j++) {
-                        float inputs[] = {i, j};
-                        float output[] = g.evaluateNetwork(inputs);
-                        int expected = i^j;
-      //                  System.out.println("Inputs are " + inputs[0] +" " + inputs[1] + " output " + output[0] + " Answer : " + (i ^ j));
-                        //if (output[0] == (i ^ j))
-                            fitness +=  (1 - Math.abs(expected - output[0]));
-                    }
-                    fitness = fitness * fitness;// * fitness * fitness;
-
-                if(fitness>15)
-                    System.out.println("Fitness : " + fitness);
-                g.setFitness(fitness);
-                //System.out.println("Fitness : "+fitness);
-            }
-            rankGlobally();
     }
 
     public void evaluateFitness(Environment environment){
@@ -71,35 +42,7 @@ public class Pool {
             }
         }
 
- /*       for(int i =0; i<allGenome.size(); i++){
-            for(int j = 0; j<allGenome.size(); j++){
-                if(i!=j){
-                    Genome player1 = allGenome.get(i);
-                    Genome player2 = allGenome.get(j);
-                    environment.match(player1,player2);
-                }
-            }
-        }*/
-
         environment.evaluateFitness(allGenome);
-        rankGlobally();
-    }
-    // experimental
-    private void rankGlobally(){                // set fitness to rank
-        ArrayList<Genome> allGenome = new ArrayList<Genome>();
-
-        for(Species s: species){
-            for(Genome g: s.getGenomes()){
-                allGenome.add(g);
-            }
-        }
-        Collections.sort(allGenome);
-  //      allGenome.get(allGenome.size()-1).writeTofile();
- //       System.out.println("TopFitness : "+ allGenome.get(allGenome.size()-1).getFitness());
-        for (int i =0 ; i<allGenome.size(); i++) {
-            allGenome.get(i).setPoints(allGenome.get(i).getFitness());      //TODO use adjustedFitness and remove points
-            allGenome.get(i).setFitness(i);
-        }
     }
 
     public Genome getTopGenome(){
@@ -132,13 +75,15 @@ public class Pool {
     public void removeStaleSpecies(){
         ArrayList<Species> survived = new ArrayList<Species>();
 
-        if(topFitness<getTopFitness()){
+        if(topFitness < getTopFitness()){
             poolStaleness = 0;
         }
 
-        for(Species s: species){
-            Genome top  = s.getTopGenome();
-            if(top.getFitness()>s.getTopFitness()){
+        // I'm pretty sure this if statement will never run because it is redundant
+        // Never mind, all this logic is correct but its just that the implementation of getTopFitness() in the Species class was redundant (I changed it to be correct now though)
+        for(Species s : species){
+            Genome top = s.getTopGenome();
+            if(top.getFitness() > s.getTopFitness()) {
                 s.setTopFitness(top.getFitness());
                 s.setStaleness(0);
             }
@@ -146,16 +91,16 @@ public class Pool {
                 s.setStaleness(s.getStaleness()+1);     // increment staleness
             }
 
-            if(s.getStaleness()< NEAT_Config.STALE_SPECIES || s.getTopFitness()>= this.getTopFitness()){
+            if(s.getStaleness()< NEAT_Config.STALE_SPECIES || s.getTopFitness()>= this.getTopFitness())
                 survived.add(s);
-            }
         }
+        
 
         Collections.sort(survived,Collections.reverseOrder());
 
-        if(poolStaleness>NEAT_Config.STALE_POOL){
-            for(int i = survived.size(); i>1 ;i--)
-            survived.remove(i);
+        if(poolStaleness >= NEAT_Config.STALE_POOL) {
+            for(int i = survived.size() - 1; i > (int) survived.size()/2 - 1 ;i--)
+                survived.remove(i);
         }
 
         species = survived;
@@ -168,38 +113,23 @@ public class Pool {
         }
     }
     public ArrayList<Genome> breedNewGeneration() {
-
-
         calculateGenomeAdjustedFitness();
         ArrayList<Species> survived = new ArrayList<Species>();
-
         removeWeakGenomesFromSpecies(false);
         removeStaleSpecies();
         float globalAdjustedFitness = calculateGlobalAdjustedFitness();
         ArrayList<Genome> children = new ArrayList<Genome>();
-        float carryOver = 0;
         for (Species s : species) {
-            float fchild = NEAT_Config.POPULATION * (s.getTotalAdjustedFitness() / globalAdjustedFitness) ;//- 1;       // reconsider
+            float fchild = NEAT_Config.POPULATION * (s.getTotalAdjustedFitness() / globalAdjustedFitness);
             int nchild = (int) fchild;
-            carryOver += fchild - nchild;
-            if (carryOver > 1) {
-                nchild++;
-                carryOver -= 1;
-            }
 
             if(nchild < 1)
                 continue;
 
             survived.add(new Species(s.getTopGenome()));
-            //s.removeWeakGenome(nchild);
 
-            //children.add(s.getTopGenome());
-            for (int i = 1; i < nchild; i++) {
-                Genome child = s.breedChild();
-                children.add(child);
-            }
-
-
+            for (int i = 1; i < nchild; i++)
+                children.add(s.breedChild());
         }
         species = survived;
         for (Genome child: children)
@@ -236,6 +166,8 @@ public class Pool {
         return allGenomes;
     }
 
-
+    public int getPoolStaleness () {
+        return poolStaleness;
+    }
 
 }

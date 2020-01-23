@@ -1,10 +1,10 @@
 public class ConnectionGene {
 
-    private int into,out, innovation;
+    private int into, out, innovation;
     private float weight;
     private boolean enabled;
 
-    public ConnectionGene(int into, int out, int innovation, float weight, boolean enabled) {
+    public ConnectionGene (int into, int out, int innovation, float weight, boolean enabled) {
         this.into = into;
         this.out = out;
         this.innovation = innovation;
@@ -13,7 +13,7 @@ public class ConnectionGene {
     }
 
     // Copy
-    public ConnectionGene(ConnectionGene connectionGene){
+    public ConnectionGene (ConnectionGene connectionGene) {
         if(connectionGene!=null) {
             this.into = connectionGene.getInto();
             this.out = connectionGene.getOut();
@@ -23,44 +23,37 @@ public class ConnectionGene {
         }
     }
 
-    public int getInto() {
+    public int getInto () {
         return into;
     }
 
-    public int getOut() {
+    public int getOut () {
         return out;
     }
 
-    public int getInnovation() {
+    public int getInnovation () {
         return innovation;
     }
 
-    public float getWeight() {
+    public float getWeight () {
         return weight;
     }
 
-    public void setWeight(float weight) {
+    public void setWeight (float weight) {
         this.weight = weight;
     }
 
-    public boolean isEnabled() {
+    public boolean isEnabled () {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabled (boolean enabled) {
         this.enabled = enabled;
     }
 
-
     @Override
     public String toString() {
-/*        return "ConnectionGene{" +
-                "into=" + into +
-                ", out=" + out +
-                ", innovation=" + innovation +
-                ", weight=" + weight +
-                ", enabled=" + enabled +
-                '}';*/
         return into+","+out+","+weight+","+enabled;
     }
+    
 }

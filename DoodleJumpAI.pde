@@ -1,19 +1,19 @@
-DJ dj;
+import java.util.ArrayList;
+AI ai;
+boolean disableVillains = true;
 
 void setup () {
   size(500, 800);
   background(255);
-  dj = new DJ();
+  ai = new AI();
 }
 
 void draw () {
   background(255);
-  dj.update();
+  ai.update();
 }
 
-import java.util.ArrayList;
-
-public class DJ implements Environment {
+public class AI implements Environment {
   
     ArrayList<Player> players;
     Game game;
@@ -21,9 +21,8 @@ public class DJ implements Environment {
     int prevGensHigh = 0;
     int genOfPrevGensHigh = 0;
     Pool pool;
-    int popSize;
     
-    public DJ () {
+    public AI () {
         game = new Game();
         pool = new Pool();
         pool.initializePool();
@@ -33,20 +32,29 @@ public class DJ implements Environment {
             players.add(toAdd);
             genome.setPlayer(toAdd);
         }
-        popSize = players.size();
     }
 
     public void evaluateFitness (ArrayList<Genome> population) {
         for (Genome genome : population) {
             genome.getPlayer().calculateFitness();
-            genome.setFitness(genome.getPlayer().fitness);
+            genome.setFitness(pow(genome.getPlayer().fitness, 2));
         }
     }
     
     public void update () {
-        if (game.play(players, gen, prevGensHigh, genOfPrevGensHigh, popSize)) {
-            pool.evaluateFitness(dj);
+        if (game.play(disableVillains, players, gen, prevGensHigh, genOfPrevGensHigh, NEAT_Config.POPULATION, pool.getSpecies().size())) {
+            pool.evaluateFitness(this);
             pool.breedNewGeneration();
+            
+            if (pool.getPoolStaleness() > 100) {
+                background(0);
+                fill(255, 255, 255);
+                textAlign(CENTER, CENTER);
+                textSize(80);
+                text("AI IS NOT LEARNING", width/2.5, 2*height/10);
+                text("Exit: [ESC]", width/2, 8*height/10);
+                noLoop();
+            }
             
             if (game.highestScore > prevGensHigh) {
                 prevGensHigh = game.highestScore;

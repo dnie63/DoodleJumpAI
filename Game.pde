@@ -20,14 +20,15 @@ class Game {
   }
   
   // returns true if all players are dead
-  boolean play (ArrayList<Player> players, int gen, int prevGensHigh, int genOfPrevGensHigh, int popSize) {
+  boolean play (boolean disableVillains, ArrayList<Player> players, int gen, int prevGensHigh, int genOfPrevGensHigh, int popSize, int numSpecies) {
     int numPlayersAlive = 0;
     
     // display the platforms, villains, and players who are still alive
     for (Platform plat : platforms)
       plat.display();
-    for (Villain vil : villains)
-      vil.display();
+    if (!disableVillains)
+      for (Villain vil : villains)
+        vil.display();
     for (Player player : players)
       if (player.alive) {
         player.display();
@@ -48,7 +49,8 @@ class Game {
     
     adjustView(highestYPos, players);
     platformManager(highestScore);
-    villainManager(highestScore);
+    if (!disableVillains)
+      villainManager(highestScore);
     
     // the game is over if all players have been stagnant in the last ten seconds
     if (millis() > timeOfLastInc + 10000)
@@ -59,8 +61,9 @@ class Game {
     textSize(20);
     text("Highest Score: " + str(highestScore), 10, 20);
     text("Players Alive (out of " + str(popSize) + "): " + str(numPlayersAlive), 10, 50);
-    text("Gen: " + str(gen), 10, 80);
-    text("Prev Gens' Highest: " + str(prevGensHigh) + " (Gen " + str(genOfPrevGensHigh) + ")", 10, 110);
+    text("Number of Species: " + str(numSpecies), 10, 80);
+    text("Gen: " + str(gen), 10, 110);
+    text("Prev Gens' Highest: " + str(prevGensHigh) + " (Gen " + str(genOfPrevGensHigh) + ")", 10, 140);
     
     return gameOver;
   }
