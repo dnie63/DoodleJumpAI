@@ -6,14 +6,23 @@ import java.util.*;
  * Created by vishnughosh on 28/02/17.
  */
 public class Genome implements Comparable {
+    private Player player;
     private Random rand = new Random();
     private float fitness;                                          // Global Percentile Rank (higher the better)
     private float points;
-    private ArrayList<ConnectionGene> connectionGeneList = new ArrayList<>();           // DNA- MAin archive of gene information
-    private TreeMap<Integer, NodeGene> nodes = new TreeMap<>();                          // Generated while performing network operation
+    private ArrayList<ConnectionGene> connectionGeneList = new ArrayList<ConnectionGene>();           // DNA- MAin archive of gene information
+    private TreeMap<Integer, NodeGene> nodes = new TreeMap<Integer, NodeGene>();                          // Generated while performing network operation
     private float adjustedFitness;                                      // For number of child to breed in species
 
-    private HashMap<MutationKeys, Float> mutationRates = new HashMap<>();
+    private HashMap<MutationKeys, Float> mutationRates = new HashMap<MutationKeys, Float>();
+    
+    public void setPlayer (Player player) {
+        this.player = player;
+    }
+    
+    public Player getPlayer () {
+        return player;
+    }
 
     /*    private class MutationRates{
             float STEPS;
@@ -91,8 +100,8 @@ public class Genome implements Comparable {
         }
 
         Genome child = new Genome();
-        TreeMap<Integer, ConnectionGene> geneMap1 = new TreeMap<>();
-        TreeMap<Integer, ConnectionGene> geneMap2 = new TreeMap<>();
+        TreeMap<Integer, ConnectionGene> geneMap1 = new TreeMap<Integer, ConnectionGene>();
+        TreeMap<Integer, ConnectionGene> geneMap2 = new TreeMap<Integer, ConnectionGene>();
 
         for(ConnectionGene con: parent1.connectionGeneList){
             assert  !geneMap1.containsKey(con.getInnovation());             //TODO Remove for better performance
@@ -152,8 +161,8 @@ public class Genome implements Comparable {
 
     public boolean isSameSpecies(Genome g2){
         Genome g1 = this;
-        TreeMap<Integer, ConnectionGene> geneMap1 = new TreeMap<>();
-        TreeMap<Integer, ConnectionGene> geneMap2 = new TreeMap<>();
+        TreeMap<Integer, ConnectionGene> geneMap1 = new TreeMap<Integer, ConnectionGene>();
+        TreeMap<Integer, ConnectionGene> geneMap2 = new TreeMap<Integer, ConnectionGene>();
 
         int matching = 0;
         int disjoint = 0;
@@ -163,12 +172,12 @@ public class Genome implements Comparable {
         float delta = 0;
 
         for(ConnectionGene con: g1.connectionGeneList) {
-            assert  !geneMap1.containsKey(con.getInnovation());             //TODO Remove for better performance
+            //assert  !geneMap1.containsKey(con.getInnovation());             //TODO Remove for better performance
             geneMap1.put(con.getInnovation(), con);
         }
 
         for(ConnectionGene con: g2.connectionGeneList) {
-            assert  !geneMap2.containsKey(con.getInnovation());             //TODO Remove for better performance
+            //assert  !geneMap2.containsKey(con.getInnovation());             //TODO Remove for better performance
             geneMap2.put(con.getInnovation(), con);
         }
         if(geneMap1.isEmpty() || geneMap2.isEmpty())

@@ -6,7 +6,7 @@ import java.util.Random;
  * Created by vishnu on 7/1/17.
  */
 public class Species implements Comparable{
-    private ArrayList<Genome> genomes = new ArrayList<>();
+    private ArrayList<Genome> genomes = new ArrayList<Genome>();
     private float topFitness = 0;
     private int staleness =0 ;
     Random rand = new Random();
@@ -48,7 +48,7 @@ public class Species implements Comparable{
         if(!allButOne)
             surviveCount = (int)Math.ceil(genomes.size()/2f);
 
-        ArrayList<Genome> survivedGenomes = new ArrayList<>();
+        ArrayList<Genome> survivedGenomes = new ArrayList<Genome>();
         for(int i=0; i<surviveCount; i++){
             survivedGenomes.add(new Genome(genomes.get(i)));
         }
@@ -58,7 +58,7 @@ public class Species implements Comparable{
     @Deprecated
     public void removeWeakGenome(int childrenToRemove){
         sortGenomes();
-        ArrayList<Genome> survived = new ArrayList<>();
+        ArrayList<Genome> survived = new ArrayList<Genome>();
         for (int i = 0; i < genomes.size() - childrenToRemove; i++) {
             survived.add(genomes.get(i));
         }
@@ -76,7 +76,7 @@ public class Species implements Comparable{
         if (rand.nextFloat() < NEAT_Config.CROSSOVER_CHANCE ){
             Genome g1 = genomes.get(rand.nextInt(genomes.size()));
             Genome g2 = genomes.get(rand.nextInt(genomes.size()));
-            child = Genome.crossOver(g1,g2);
+            child = g1.crossOver(g2);
         }
         else{
             Genome g1 = genomes.get(rand.nextInt(genomes.size()));

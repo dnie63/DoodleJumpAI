@@ -8,7 +8,7 @@ public class NodeGene {
 
     private float value;
 
-    private ArrayList<ConnectionGene> incomingCon = new ArrayList<>();
+    private ArrayList<ConnectionGene> incomingCon = new ArrayList<ConnectionGene>();
 
     public NodeGene(float value) {
         super();

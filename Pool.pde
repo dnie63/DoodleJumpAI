@@ -4,8 +4,7 @@ import java.util.Collections;
 public class Pool {
 
 
-    private ArrayList<Species> species = new ArrayList<>();
-    private int generations = 0;
+    private ArrayList<Species> species = new ArrayList<Species>();
     private float topFitness ;
     private int poolStaleness = 0;
 
@@ -28,7 +27,7 @@ public class Pool {
                 continue;
             Genome g0 = s.getGenomes().get(0);
 //    System.out.println(s.genomes.size());
-            if (Genome.isSameSpecies(g, g0)) {
+            if (g.isSameSpecies(g0)) {
                 s.getGenomes().add(g);
                 return;
             }
@@ -64,7 +63,7 @@ public class Pool {
 
     public void evaluateFitness(Environment environment){
 
-        ArrayList<Genome> allGenome = new ArrayList<>();
+        ArrayList<Genome> allGenome = new ArrayList<Genome>();
 
         for(Species s: species){
             for(Genome g: s.getGenomes()){
@@ -87,7 +86,7 @@ public class Pool {
     }
     // experimental
     private void rankGlobally(){                // set fitness to rank
-        ArrayList<Genome> allGenome = new ArrayList<>();
+        ArrayList<Genome> allGenome = new ArrayList<Genome>();
 
         for(Species s: species){
             for(Genome g: s.getGenomes()){
@@ -104,7 +103,7 @@ public class Pool {
     }
 
     public Genome getTopGenome(){
-        ArrayList<Genome> allGenome = new ArrayList<>();
+        ArrayList<Genome> allGenome = new ArrayList<Genome>();
 
         for(Species s: species){
             for(Genome g: s.getGenomes()){
@@ -131,7 +130,7 @@ public class Pool {
     }
 
     public void removeStaleSpecies(){
-        ArrayList<Species> survived = new ArrayList<>();
+        ArrayList<Species> survived = new ArrayList<Species>();
 
         if(topFitness<getTopFitness()){
             poolStaleness = 0;
@@ -172,12 +171,12 @@ public class Pool {
 
 
         calculateGenomeAdjustedFitness();
-        ArrayList<Species> survived = new ArrayList<>();
+        ArrayList<Species> survived = new ArrayList<Species>();
 
         removeWeakGenomesFromSpecies(false);
         removeStaleSpecies();
         float globalAdjustedFitness = calculateGlobalAdjustedFitness();
-        ArrayList<Genome> children = new ArrayList<>();
+        ArrayList<Genome> children = new ArrayList<Genome>();
         float carryOver = 0;
         for (Species s : species) {
             float fchild = NEAT_Config.POPULATION * (s.getTotalAdjustedFitness() / globalAdjustedFitness) ;//- 1;       // reconsider
@@ -205,8 +204,6 @@ public class Pool {
         species = survived;
         for (Genome child: children)
             addToSpecies(child);
-        //clearInnovations();
-        generations++;
         return children;
     }
 
@@ -228,6 +225,17 @@ public class Pool {
             p += s.getGenomes().size();
         return p;
     }
+    
+    public ArrayList<Genome> getAllGenomes () {
+        ArrayList<Genome> allGenomes = new ArrayList<Genome>();
+      
+        for (Species s : species)
+            for (Genome g : s.getGenomes())
+                allGenomes.add(g);
+                
+        return allGenomes;
+    }
+
 
 
 }
