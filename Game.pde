@@ -14,7 +14,7 @@ class Game {
   Game () {
     platforms = new ArrayList<Platform>();
     villains = new ArrayList<Villain>();
-    int[] loc = {100, 800};
+    int[] loc = {100, 780};
     int[] directions = {0, 0};
     platforms.add(new Platform(loc, 0, green, directions, 0));
   }
@@ -53,7 +53,7 @@ class Game {
       villainManager(highestScore);
     
     // the game is over if all players have been stagnant in the last ten seconds
-    if (millis() > timeOfLastInc + 10000)
+    if (millis() > timeOfLastInc + 30000)
       gameOver = true;
     
     // display the highest score, the current generation number, and the previous generations' highest score
@@ -74,7 +74,9 @@ class Game {
     for (int i = platforms.size() - 1; i >= 0; i--)
       if (platforms.get(i).ypos > height)
         platforms.remove(i);
-      
+    
+    // normal game logic
+    /*
     // adds in moving and non moving platforms once score is >= 1000
     if (highestScore >= 1000) {
       int decrement = Math.min(maxPlatforms - minPlatforms, highestScore/500);
@@ -104,6 +106,15 @@ class Game {
         int[] directions = {0, 0};
         platforms.add(new Platform(loc, highestScore, green, directions, 0));
       }
+    }
+    */
+    
+    // game logic used to train the AI: only nonmoving platforms and as sparsely generated as possible right from the beginning
+    int step = ratio * maxPlatforms / minPlatforms;
+    while (platforms.size() < minPlatforms) {
+      int[] loc = {(int)(Math.random()*(width - Platform.len)), platforms.get(platforms.size() - 1).ypos - step};
+      int[] directions = {0, 0};
+      platforms.add(new Platform(loc, highestScore, green, directions, 0));
     }
   }
   
