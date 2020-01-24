@@ -1,6 +1,6 @@
 public class NEAT_Config {
 
-    public static final int INPUTS = 4000;
+    public static final int INPUTS = 2560;
     public static final int OUTPUTS = 3;
     public static final int HIDDEN_NODES = 10000;
     public static final int POPULATION = 500;

@@ -3,7 +3,7 @@ AI ai;
 boolean disableVillains = true;
 
 void setup () {
-  size(500, 800);
+  size(400, 640);
   background(255);
   ai = new AI();
 }

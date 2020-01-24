@@ -1,15 +1,15 @@
 class Player {
-    
-  int xpos = 135;
-  int ypos = 475;
-  int yvel = 0;
-  boolean alive = true;
-  ArrayList<Villain> villainsKilled = new ArrayList<Villain>();
-  ArrayList<Platform> disappearedPlatforms = new ArrayList<Platform>();
+  
   final int xlen = 40;
   final int ylen = 50;
   final int accel_g = 1;
   final color colour = color(153, 90, 233);
+  int xpos = width/2 - xlen;
+  int ypos = height*3/4;
+  int yvel = 0;
+  boolean alive = true;
+  ArrayList<Villain> villainsKilled = new ArrayList<Villain>();
+  ArrayList<Platform> disappearedPlatforms = new ArrayList<Platform>();
   
   Genome brain;
   int[] moves = {-1, 0, 1};

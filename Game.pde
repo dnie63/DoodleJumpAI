@@ -5,7 +5,7 @@ class Game {
   int maxPlatforms = 20;
   int minPlatforms = 6;
   int maxVillains = 1;
-  int ratio = 40;                        // ratio = height/maxPlatforms
+  int ratio = 32;                        // ratio = height/maxPlatforms
   int highestScore = 0;
   int timeOfLastInc = millis();
   color green = color(144, 238, 144);
@@ -14,7 +14,7 @@ class Game {
   Game () {
     platforms = new ArrayList<Platform>();
     villains = new ArrayList<Villain>();
-    int[] loc = {100, 780};
+    int[] loc = {100, 620};
     int[] directions = {0, 0};
     platforms.add(new Platform(loc, 0, green, directions, 0));
   }
@@ -110,8 +110,9 @@ class Game {
     */
     
     // game logic used to train the AI: only nonmoving platforms and as sparsely generated as possible right from the beginning
-    int step = ratio * maxPlatforms / minPlatforms;
-    while (platforms.size() < minPlatforms) {
+    int numPlatforms = 8;
+    int step = ratio * maxPlatforms / numPlatforms;
+    while (platforms.size() < numPlatforms) {
       int[] loc = {(int)(Math.random()*(width - Platform.len)), platforms.get(platforms.size() - 1).ypos - step};
       int[] directions = {0, 0};
       platforms.add(new Platform(loc, highestScore, green, directions, 0));
