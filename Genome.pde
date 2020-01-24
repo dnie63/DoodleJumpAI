@@ -163,7 +163,6 @@ public class Genome implements Comparable {
                     excess++;
                 }
             }
-
         }
 
         int N = matching+disjoint+excess ;
@@ -305,10 +304,11 @@ public class Genome implements Comparable {
             throw new RuntimeErrorException(null);          // TODO Pool.newInnovation(node1, node2)*/
         
         // my own code
-        int node1 = rand.nextInt(nodes.size() - NEAT_Config.OUTPUTS);
-        int node2 = rand.nextInt(nodes.size() - NEAT_Config.INPUTS) + NEAT_Config.INPUTS;
+        int numNodes = nodes.size();
+        int node1 = rand.nextInt(numNodes - NEAT_Config.OUTPUTS);
+        int node2 = rand.nextInt(numNodes - NEAT_Config.INPUTS - 1) + NEAT_Config.INPUTS + NEAT_Config.HIDDEN_NODES + 1 - (numNodes - 1 - NEAT_Config.INPUTS - NEAT_Config.OUTPUTS);
         if (forceBias)
-            node2 = NEAT_Config.INPUTS;
+            node1 = NEAT_Config.INPUTS;
         for (ConnectionGene connection : nodes.get(node2).getIncomingCon())
             if (connection.getInto() == node1)
                 return;
@@ -316,7 +316,7 @@ public class Genome implements Comparable {
     }
 
     void mutateAddNode() {
-        if (connectionGeneList.size() > 0) {
+        if (connectionGeneList.size() > 0 && nodes.size() < NEAT_Config.INPUTS + NEAT_Config.HIDDEN_NODES + NEAT_Config.OUTPUTS + 1) {
             int timeoutCount = 0;
             ConnectionGene randomCon = connectionGeneList.get(rand.nextInt(connectionGeneList.size()));
             while (!randomCon.isEnabled()) {
@@ -325,7 +325,8 @@ public class Genome implements Comparable {
                 if (timeoutCount > NEAT_Config.HIDDEN_NODES)
                     return;
             }
-            int nextNode = nodes.size() - NEAT_Config.OUTPUTS;
+            // counts down from the node number that is one below the first output node
+            int nextNode = NEAT_Config.INPUTS + NEAT_Config.HIDDEN_NODES - (nodes.size() - 1 - NEAT_Config.INPUTS - NEAT_Config.OUTPUTS);
             randomCon.setEnabled(false);
             connectionGeneList.add(new ConnectionGene(randomCon.getInto(), nextNode, InnovationCounter.newInnovation(), 1, true));        // Add innovation and weight
             connectionGeneList.add(new ConnectionGene(nextNode, randomCon.getOut(), InnovationCounter.newInnovation(), randomCon.getWeight(), true));
