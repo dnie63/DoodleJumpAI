@@ -14,7 +14,7 @@ class Game {
   Game () {
     platforms = new ArrayList<Platform>();
     villains = new ArrayList<Villain>();
-    int[] loc = {100, 620};
+    int[] loc = {width/2, height - 50};
     int[] directions = {0, 0};
     platforms.add(new Platform(loc, 0, green, directions, 0));
   }
@@ -72,7 +72,7 @@ class Game {
     
     // checks if platforms have fallen off the bottom of the screen and deletes them
     for (int i = platforms.size() - 1; i >= 0; i--)
-      if (platforms.get(i).ypos > height)
+      if (platforms.get(i).ypos > height*10)
         platforms.remove(i);
     
     // normal game logic
@@ -112,7 +112,8 @@ class Game {
     // game logic used to train the AI: only nonmoving platforms and as sparsely generated as possible right from the beginning
     int numPlatforms = 8;
     int step = ratio * maxPlatforms / numPlatforms;
-    while (platforms.size() < numPlatforms) {
+    while (platforms.size() < maxPlatforms) {
+      println(platforms.size());
       int[] loc = {(int)(Math.random()*(width - Platform.len)), platforms.get(platforms.size() - 1).ypos - step};
       int[] directions = {0, 0};
       platforms.add(new Platform(loc, highestScore, green, directions, 0));
@@ -151,6 +152,15 @@ class Game {
         vil.ypos += climb;
       for (Player player : players)
         player.ypos += climb;
+    } else if (highestYPos > height - 75) {
+        int decline = height - 75 - highestYPos;
+        
+        for (Platform plat : platforms)
+        plat.ypos += decline;
+        for (Villain vil : villains)
+          vil.ypos += decline;
+        for (Player player : players)
+          player.ypos += decline;
     }
   }
   

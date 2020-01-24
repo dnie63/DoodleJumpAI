@@ -32,7 +32,6 @@ class Player {
     }
     
     float[] moveProbabilities = brain.evaluateNetwork(inputs);
-    println(moveProbabilities);
     int maxIndex = 0;
     float maxProb = moveProbabilities[0];
     for (int i = 1; i < moveProbabilities.length; i++)
@@ -94,7 +93,7 @@ class Player {
     // updates the player's vertical position each frame based on its y velocity
     // and determines if the player is still alive afterwards
     ypos += yvel;
-    if (ypos > height)
+    if (yvel > 27)
       alive = false;
     
     // wraps left and right
