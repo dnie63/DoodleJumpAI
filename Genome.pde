@@ -187,7 +187,7 @@ public class Genome implements Comparable {
         nodes.put(NEAT_Config.INPUTS, new NodeGene(1));        // Bias
 
         //output layer
-        for (int i = NEAT_Config.INPUTS + NEAT_Config.HIDDEN_NODES; i < NEAT_Config.INPUTS + NEAT_Config.HIDDEN_NODES + NEAT_Config.OUTPUTS; i++) {
+        for (int i = NEAT_Config.INPUTS + NEAT_Config.HIDDEN_NODES + 1; i < NEAT_Config.INPUTS + NEAT_Config.HIDDEN_NODES + NEAT_Config.OUTPUTS + 1; i++) {
             nodes.put(i, new NodeGene(0));
         }
 
@@ -224,9 +224,9 @@ public class Genome implements Comparable {
             }
         }
 
-        for (int i = 0; i < NEAT_Config.OUTPUTS; i++) {
-            output[i] = nodes.get(NEAT_Config.INPUTS + NEAT_Config.HIDDEN_NODES + i).getValue();
-        }
+        for (int i = 0; i < NEAT_Config.OUTPUTS; i++)
+            output[i] = nodes.get(NEAT_Config.INPUTS + NEAT_Config.HIDDEN_NODES + i + 1).getValue();
+        
         return output;
     }
 

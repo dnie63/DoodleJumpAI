@@ -22,9 +22,8 @@ public class Species implements Comparable{
     }
 
     public void calculateGenomeAdjustedFitness(){
-        for(Genome g : genomes){
+        for(Genome g : genomes)
             g.setAdjustedFitness(g.getFitness()/genomes.size());
-        }
     }
 
     public float getTotalAdjustedFitness(){
@@ -36,22 +35,21 @@ public class Species implements Comparable{
          return totalAdjustedFitness;
     }
 
-
+    // sort genomes from greatest to least in fitness
     private void  sortGenomes(){
-        //sort internally genomes
         Collections.sort(genomes,Collections.reverseOrder());
     }
 
     public void removeWeakGenomes(boolean allButOne){
         sortGenomes();
+        
         int surviveCount = 1;
         if(!allButOne)
             surviveCount = (int)Math.ceil(genomes.size()/2f);
 
         ArrayList<Genome> survivedGenomes = new ArrayList<Genome>();
-        for(int i=0; i<surviveCount; i++){
+        for(int i=0; i<surviveCount; i++)
             survivedGenomes.add(new Genome(genomes.get(i)));
-        }
         genomes = survivedGenomes;
     }
 
