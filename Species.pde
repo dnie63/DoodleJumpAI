@@ -60,15 +60,14 @@ public class Species implements Comparable{
 
     public Genome breedChild(){
         Genome child ;
+        
         if (rand.nextFloat() < NEAT_Config.CROSSOVER_CHANCE ){
             Genome g1 = genomes.get(rand.nextInt(genomes.size()));
             Genome g2 = genomes.get(rand.nextInt(genomes.size()));
             child = g1.crossOver(g2);
-        }
-        else{
-            Genome g1 = genomes.get(rand.nextInt(genomes.size()));
-            child = g1;
-        }
+        } else
+            child = genomes.get(rand.nextInt(genomes.size()));
+        
         child = new Genome(child);
         child.Mutate();
 

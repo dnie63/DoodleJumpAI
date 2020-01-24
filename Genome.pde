@@ -7,7 +7,6 @@ public class Genome implements Comparable {
     private Player player;
     private Random rand = new Random();
     private float fitness;                                                                            // Global Percentile Rank (higher the better)
-    private float points;
     private ArrayList<ConnectionGene> connectionGeneList = new ArrayList<ConnectionGene>();           // DNA- MAin archive of gene information
     private TreeMap<Integer, NodeGene> nodes = new TreeMap<Integer, NodeGene>();                      // Generated while performing network operation
     private float adjustedFitness;                                                                    // For number of child to breed in species
@@ -167,11 +166,8 @@ public class Genome implements Comparable {
 
         }
 
-        //System.out.println("matching : "+matching + "\ndisjoint : "+ disjoint + "\nExcess : "+ excess +"\nWeight : "+ weight);
-
         int N = matching+disjoint+excess ;
-
-        if(N>0)
+        if (N > 0)
             delta = (NEAT_Config.EXCESS_COEFFICENT * excess + NEAT_Config.DISJOINT_COEFFICENT * disjoint) / N + (NEAT_Config.WEIGHT_COEFFICENT * weight) / matching;
 
         return delta < NEAT_Config.COMPATIBILITY_THRESHOLD;
@@ -231,21 +227,19 @@ public class Genome implements Comparable {
     }
 
     private float sigmoid(float x) {
-        // TODO Auto-generated method stub
         return (float) (1 / (1 + Math.exp(-4.9 * x)));
     }
 
-    // Mutations
+    // Mutations --------------------------------------------------------------------------------------------
 
     public void Mutate() {
-        // Mutate mutation rates
-        for (Map.Entry<MutationKeys, Float> entry : mutationRates.entrySet()) {
+        generateNetwork();
+        /*
+        for (Map.Entry<MutationKeys, Float> entry : mutationRates.entrySet())
             if(rand.nextBoolean())
                 mutationRates.put(entry.getKey(), 0.95f * entry.getValue() );
             else
-                mutationRates.put(entry.getKey(), 1.05263f * entry.getValue() );
-        }
-
+                mutationRates.put(entry.getKey(), 1.05263f * entry.getValue() );*/
 
         if (rand.nextFloat() <= mutationRates.get(MutationKeys.WEIGHT_MUTATION_CHANCE))
             mutateWeight();
@@ -262,7 +256,6 @@ public class Genome implements Comparable {
     }
 
     void mutateWeight() {
-
         for (ConnectionGene c : connectionGeneList) {
             if (rand.nextFloat() < NEAT_Config.WEIGHT_CHANCE) {
                 if (rand.nextFloat() < NEAT_Config.PERTURB_CHANCE)
@@ -272,13 +265,14 @@ public class Genome implements Comparable {
         }
     }
 
-    void mutateAddConnection(boolean forceBais) {
-        generateNetwork();
-        int i = 0;
+    void mutateAddConnection(boolean forceBias) {
+        
+        // original code
+        /*int i = 0;
         int j = 0;
         int random2 = rand.nextInt(nodes.size() - NEAT_Config.INPUTS - 1) + NEAT_Config.INPUTS + 1;
         int random1 = rand.nextInt(nodes.size());
-        if(forceBais)
+        if(forceBias)
             random1 = NEAT_Config.INPUTS;
         int node1 = -1;
         int node2 = -1;
@@ -298,9 +292,6 @@ public class Genome implements Comparable {
             }
             j++;
         }
-//  System.out.println("random1 = "+random1 +" random2 = "+random2);
-//  System.out.println("Node1 = "+node1 +" node 2 = "+node2);
-
 
         if (node1 >= node2)
             return;
@@ -311,13 +302,20 @@ public class Genome implements Comparable {
         }
 
         if (node1 < 0 || node2 < 0)
-            throw new RuntimeErrorException(null);          // TODO Pool.newInnovation(node1, node2)
+            throw new RuntimeErrorException(null);          // TODO Pool.newInnovation(node1, node2)*/
+        
+        // my own code
+        int node1 = rand.nextInt(nodes.size() - NEAT_Config.OUTPUTS);
+        int node2 = rand.nextInt(nodes.size() - NEAT_Config.INPUTS) + NEAT_Config.INPUTS;
+        if (forceBias)
+            node2 = NEAT_Config.INPUTS;
+        for (ConnectionGene connection : nodes.get(node2).getIncomingCon())
+            if (connection.getInto() == node1)
+                return;
         connectionGeneList.add(new ConnectionGene(node1, node2, InnovationCounter.newInnovation(), 4 * rand.nextFloat() - 2, true));                // Add innovation and weight
-
     }
 
     void mutateAddNode() {
-        generateNetwork();
         if (connectionGeneList.size() > 0) {
             int timeoutCount = 0;
             ConnectionGene randomCon = connectionGeneList.get(rand.nextInt(connectionGeneList.size()));
@@ -334,16 +332,13 @@ public class Genome implements Comparable {
         }
     }
     void disableMutate() {
-        //generateNetwork();                // remove laters
-        if (connectionGeneList.size() > 0) {
+         if (connectionGeneList.size() > 0) {
             ConnectionGene randomCon = connectionGeneList.get(rand.nextInt(connectionGeneList.size()));
             randomCon.setEnabled(false);
         }
     }
 
-
     void enableMutate() {
-        //generateNetwork();                // remove laters
         if (connectionGeneList.size() > 0) {
             ConnectionGene randomCon = connectionGeneList.get(rand.nextInt(connectionGeneList.size()));
             randomCon.setEnabled(true);
@@ -376,54 +371,6 @@ public class Genome implements Comparable {
 
     public float getAdjustedFitness() {
         return adjustedFitness;
-    }
-
-    public float getPoints() {
-        return points;
-    }
-
-    public void setPoints(float points) {
-        this.points = points;
-    }
-
-    public void writeTofile(){
-        BufferedWriter bw = null;
-        FileWriter fw = null;
-        StringBuilder builder = new StringBuilder();
-        for (ConnectionGene conn: connectionGeneList) {
-            builder.append(conn.toString()+"\n");
-        }
-        try {
-
-
-            fw = new FileWriter("Genome.txt");
-            bw = new BufferedWriter(fw);
-            bw.write(builder.toString());
-
-            System.out.println("Done");
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-
-        } finally {
-
-            try {
-
-                if (bw != null)
-                    bw.close();
-
-                if (fw != null)
-                    fw.close();
-
-            } catch (IOException ex) {
-
-                ex.printStackTrace();
-
-            }
-
-        }
-
     }
 
 }

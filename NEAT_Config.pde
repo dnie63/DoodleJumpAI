@@ -10,7 +10,7 @@ public class NEAT_Config {
     public static final float DISJOINT_COEFFICENT = 2;
     public static final float WEIGHT_COEFFICENT = 0.4f;
 
-    public static final float STEPS = 0.1f;
+    public static final float STEPS = 0.05f;
     public static final float PERTURB_CHANCE = 0.75f;
     public static final float WEIGHT_CHANCE = 0.5f;
     public static final float WEIGHT_MUTATION_CHANCE = 0.95f;
