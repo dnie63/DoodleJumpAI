@@ -16,11 +16,14 @@ class Platform {
     this.speed = speed;
     this.colour = colour;
         
-    // adds in disappearing platforms that are black once score is >= 3000
+    // adds in disappearing platforms once score is >= 3000 (black is nonmoving, purple is moving)
     if (score >= 3000)
       if (random(100) >= 80) {
         will_disappear = 1;
-        this.colour = color(0, 0, 0);
+        if (speed == 0)
+          this.colour = color(0, 0, 0);
+        else
+          this.colour = color(138,43,226);
       }
   }
         
