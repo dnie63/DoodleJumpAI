@@ -20,15 +20,14 @@ class Player {
     this.brain = brain;
   }
   
-  int think () {
-    loadPixels();
-    float[] inputs = new float[pixels.length/100];
-    int x = 0;
-    int y = 0;
-    for (int i = 0; i < inputs.length; i++) {
-      x = (i*10)%500;
-      y = (int) i/50;
-      inputs[i] = -1 * pixels[y*width + x];
+  int think (ArrayList<Platform> platforms, int step) {
+    ArrayList<Platform> nearestPlatforms = getNearestPlatforms(platforms, step);
+    float[] inputs = new float[NEAT_Config.INPUTS];
+    int index = 0;
+    for (Platform plat : nearestPlatforms) {
+      inputs[index] = plat.xpos;
+      inputs[index + 1] = plat.ypos;
+      index += 2;
     }
     
     float[] moveProbabilities = brain.evaluateNetwork(inputs);
@@ -43,10 +42,10 @@ class Player {
     return moves[maxIndex];
   }
   
-  void update (ArrayList<Platform> platforms, ArrayList<Villain> villains) {
+  void update (ArrayList<Platform> platforms, ArrayList<Villain> villains, int step) {
     
     // changes the horizontal velocities based on brain's decision
-    xpos += think() * 7;
+    xpos += think(platforms, step) * 7;
       
     // changes the vertical velocity based on acceleration due to gravity
     yvel += accel_g;
@@ -114,6 +113,20 @@ class Player {
   // calculates the fitness of the player
   void calculateFitness () {
     fitness = 1.0/ypos;
+  }
+  
+  // returns the platforms closest to the player depending on y height
+  ArrayList<Platform> getNearestPlatforms (ArrayList<Platform> platforms, int step) {
+    ArrayList<Platform> nearest = new ArrayList<Platform>();
+    
+    for (Platform plat : platforms) {
+      if (abs(plat.ypos - ypos) < (int) (step * 2.5))
+        nearest.add(plat);
+      if (nearest.size() >= 5)
+        return nearest;
+    }
+        
+    return nearest;
   }
   
 }

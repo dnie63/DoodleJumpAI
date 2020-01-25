@@ -309,10 +309,13 @@ public class Genome implements Comparable {
         int node2 = rand.nextInt(numNodes - NEAT_Config.INPUTS - 1) + NEAT_Config.INPUTS + NEAT_Config.HIDDEN_NODES + 1 - (numNodes - 1 - NEAT_Config.INPUTS - NEAT_Config.OUTPUTS);
         if (forceBias)
             node1 = NEAT_Config.INPUTS;
-        for (ConnectionGene connection : nodes.get(node2).getIncomingCon())
-            if (connection.getInto() == node1)
-                return;
-        connectionGeneList.add(new ConnectionGene(node1, node2, InnovationCounter.newInnovation(), 4 * rand.nextFloat() - 2, true));                // Add innovation and weight
+        NodeGene actualNode2 = nodes.get(node2);
+        if (!actualNode2.equals(null)) {
+            for (ConnectionGene connection : actualNode2.getIncomingCon())
+                if (connection.getInto() == node1)
+                    return;
+            connectionGeneList.add(new ConnectionGene(node1, node2, InnovationCounter.newInnovation(), 4 * rand.nextFloat() - 2, true));                // Add innovation and weight
+        }
     }
 
     void mutateAddNode() {

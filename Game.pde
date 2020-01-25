@@ -11,10 +11,13 @@ class Game {
   color green = color(144, 238, 144);
   color blue = color(107, 202, 226);
   
+  int numPlatforms = 8;
+  int step = ratio * maxPlatforms / numPlatforms;
+  
   Game () {
     platforms = new ArrayList<Platform>();
     villains = new ArrayList<Villain>();
-    int[] loc = {width/2, height - 50};
+    int[] loc = {width/2, (int) (height * 1.5)};
     int[] directions = {0, 0};
     platforms.add(new Platform(loc, 0, green, directions, 0));
   }
@@ -42,7 +45,7 @@ class Game {
     for (Player player : players) {
       if (player.alive) {
         gameOver = false;
-        player.update(platforms, villains);
+        player.update(platforms, villains, step);
         if (player.ypos < highestYPos)
           highestYPos = player.ypos;
         if (player.ypos > lowestYPos)
@@ -56,7 +59,7 @@ class Game {
       villainManager(highestScore);
     
     // the game is over if all players have been stagnant in the last ten seconds
-    if (millis() > timeOfLastInc + 30000)
+    if (millis() > timeOfLastInc + 10000)
       gameOver = true;
     
     // display the highest score, the current generation number, and the previous generations' highest score
