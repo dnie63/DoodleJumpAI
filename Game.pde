@@ -38,17 +38,20 @@ class Game {
     // checks to see if all players are dead and what the current highest ypos is after playing a step of each player
     boolean gameOver = true;
     int highestYPos = height;
+    int lowestYPos = 0;
     for (Player player : players) {
       if (player.alive) {
         gameOver = false;
         player.update(platforms, villains);
         if (player.ypos < highestYPos)
           highestYPos = player.ypos;
+        if (player.ypos > lowestYPos)
+          lowestYPos = player.ypos;
       }
     }
     
     adjustView(highestYPos, players);
-    platformManager(highestScore);
+    platformManager(highestScore, lowestYPos, highestYPos);
     if (!disableVillains)
       villainManager(highestScore);
     
@@ -68,11 +71,11 @@ class Game {
     return gameOver;
   }
   
-  void platformManager (int highestScore) {
+  void platformManager (int highestScore, int lowestYPos, int highestYPos) {
     
-    // checks if platforms have fallen off the bottom of the screen and deletes them
+    // deletes unnecessary platforms
     for (int i = platforms.size() - 1; i >= 0; i--)
-      if (platforms.get(i).ypos > height*10)
+      if (platforms.get(i).ypos > lowestYPos + height)
         platforms.remove(i);
     
     // normal game logic
@@ -112,8 +115,7 @@ class Game {
     // game logic used to train the AI: only nonmoving platforms and as sparsely generated as possible right from the beginning
     int numPlatforms = 8;
     int step = ratio * maxPlatforms / numPlatforms;
-    while (platforms.size() < maxPlatforms) {
-      println(platforms.size());
+    while (platforms.get(platforms.size() - 1).ypos > highestYPos - height) {
       int[] loc = {(int)(Math.random()*(width - Platform.len)), platforms.get(platforms.size() - 1).ypos - step};
       int[] directions = {0, 0};
       platforms.add(new Platform(loc, highestScore, green, directions, 0));
