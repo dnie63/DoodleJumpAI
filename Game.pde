@@ -7,6 +7,7 @@ class Game {
   int maxVillains = 1;
   int ratio = 32;                        // ratio = height/maxPlatforms
   int highestScore = 0;
+  int currHighestScore = 0;
   int timeOfLastInc = millis();
   color green = color(144, 238, 144);
   color blue = color(107, 202, 226);
@@ -59,7 +60,7 @@ class Game {
       villainManager(highestScore);
     
     // the game is over if all players have been stagnant in the last ten seconds
-    if (millis() > timeOfLastInc + 10000)
+    if (millis() > timeOfLastInc + 30000)
       gameOver = true;
     
     // display the highest score, the current generation number, and the previous generations' highest score
@@ -118,10 +119,15 @@ class Game {
     // game logic used to train the AI: only nonmoving platforms and as sparsely generated as possible right from the beginning
     int numPlatforms = 8;
     int step = ratio * maxPlatforms / numPlatforms;
-    while (platforms.get(platforms.size() - 1).ypos > highestYPos - height) {
+    int index = platforms.size() - 1;
+    if (index < 0)
+      index = 0;
+    while (platforms.get(index).ypos > highestYPos - height) {
       int[] loc = {(int)(Math.random()*(width - Platform.len)), platforms.get(platforms.size() - 1).ypos - step};
       int[] directions = {0, 0};
       platforms.add(new Platform(loc, highestScore, green, directions, 0));
+      index = platforms.size() - 1;
+      println(platforms.size());
     }
   }
   
@@ -148,8 +154,10 @@ class Game {
     // "moves" the view frame if highest player moves too far up and increases the highest score accordingly
     if (highestYPos < 300) {
       int climb = 300 - highestYPos;
-      highestScore += climb;
-      timeOfLastInc = millis();
+      currHighestScore += climb;
+      if (currHighestScore > highestScore)
+        highestScore = currHighestScore;
+        timeOfLastInc = millis();
       
       for (Platform plat : platforms)
         plat.ypos += climb;
@@ -159,6 +167,7 @@ class Game {
         player.ypos += climb;
     } else if (highestYPos > height - 75) {
         int decline = height - 75 - highestYPos;
+        currHighestScore += decline;
         
         for (Platform plat : platforms)
         plat.ypos += decline;

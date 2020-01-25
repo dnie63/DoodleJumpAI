@@ -23,7 +23,10 @@ class Player {
   int think (ArrayList<Platform> platforms, int step) {
     ArrayList<Platform> nearestPlatforms = getNearestPlatforms(platforms, step);
     float[] inputs = new float[NEAT_Config.INPUTS];
-    int index = 0;
+    inputs[0] = xpos;
+    inputs[1] = ypos;
+    inputs[2] = yvel;
+    int index = 3;
     for (Platform plat : nearestPlatforms) {
       inputs[index] = plat.xpos;
       inputs[index + 1] = plat.ypos;
@@ -112,7 +115,7 @@ class Player {
   
   // calculates the fitness of the player
   void calculateFitness () {
-    fitness = 1.0/ypos;
+    fitness = 1.0/(ypos*ypos);
   }
   
   // returns the platforms closest to the player depending on y height

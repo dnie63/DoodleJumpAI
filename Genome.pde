@@ -310,7 +310,7 @@ public class Genome implements Comparable {
         if (forceBias)
             node1 = NEAT_Config.INPUTS;
         NodeGene actualNode2 = nodes.get(node2);
-        if (!actualNode2.equals(null)) {
+        if (!(actualNode2 == null)) {
             for (ConnectionGene connection : actualNode2.getIncomingCon())
                 if (connection.getInto() == node1)
                     return;
