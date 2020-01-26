@@ -11,7 +11,7 @@ class Game {
   color green = color(144, 238, 144);
   color blue = color(107, 202, 226);
   
-  int numPlatforms = 8;
+  int numPlatforms = 6;
   int step = ratio * maxPlatforms / numPlatforms;
   
   Game () {
@@ -114,9 +114,6 @@ class Game {
     */
     
     // game logic used to train the AI: only nonmoving platforms and as sparsely generated as possible right from the beginning
-    int numPlatforms = 6;
-    int step = ratio * maxPlatforms / numPlatforms;
-    
     if (platforms.size() > 0)
       while (platforms.get(platforms.size() - 1).ypos > highestYPos - height) {
         int[] loc = {(int)(Math.random()*(width - Platform.len)), platforms.get(platforms.size() - 1).ypos - step};
