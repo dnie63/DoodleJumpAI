@@ -43,11 +43,11 @@ public class AI implements Environment {
                 leastYPos = genome.getPlayer().ypos;
         if (leastYPos < 0)
             for (Genome genome : population)
-                genome.getPlayer().ypos += -1*leastYPos + 1;
+                genome.getPlayer().ypos += -1*leastYPos + 10;
         
         for (Genome genome : population) {
             genome.getPlayer().calculateFitness();
-            genome.setFitness(pow(genome.getPlayer().fitness, 2));
+            genome.setFitness(genome.getPlayer().fitness);
         }
     }
     
