@@ -62,7 +62,7 @@ public class AI implements Environment {
             genome.getPlayer().highestYPos = bar - genome.getPlayer().highestYPos;
                     
         for (Genome genome : population) {
-            genome.getPlayer().calculateFitness();
+            genome.getPlayer().calculateFitness(bar);
             genome.setFitness(genome.getPlayer().fitness);
         }
     }

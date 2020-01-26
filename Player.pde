@@ -52,7 +52,7 @@ class Player {
     
     // changes the horizontal velocities based on brain's decision
     int move = think(platforms, step);
-    xpos += move * 8;
+    xpos += move * 7;
 
     if (abs(move) > 0)
       totalLeftRightMoves += 1;
@@ -134,14 +134,8 @@ class Player {
   }
   
   // calculates the fitness of the player
-  void calculateFitness () {
-    float factorJumps = 0;
-    if (totalJumps != 0)
-      factorJumps = beneficialJumps/totalJumps*10;
-    float factorMoves = totalLeftRightMoves*10;
-    fitness = highestYPos + factorJumps - factorMoves;
-    if (fitness < 0)
-      fitness = 10;
+  void calculateFitness (int bar) {
+    fitness = highestYPos + beneficialJumps*bar/100;
   }
   
   // returns the platforms closest to the player depending on y height
