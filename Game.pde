@@ -53,10 +53,12 @@ class Game {
       }
     }
     
-    adjustView(highestYPos, players);
-    platformManager(highestScore, lowestYPos, highestYPos);
-    if (!disableVillains)
-      villainManager(highestScore);
+    if (!gameOver) {
+      adjustView(highestYPos, players);
+      platformManager(highestScore, lowestYPos, highestYPos);
+      if (!disableVillains)
+        villainManager(highestScore);
+    }
           
     // display the highest score, the current generation number, and the previous generations' highest score
     fill(0, 0, 0);

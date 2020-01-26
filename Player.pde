@@ -15,6 +15,7 @@ class Player {
   int beneficialJumps = 0;
   int highestYPos = height*3/4;
   int timeOfLastInc = millis();
+  int totalLeftRightMoves = 0;
   
   Genome brain;
   int[] moves = {-1, 0, 1};
@@ -53,7 +54,11 @@ class Player {
   void update (ArrayList<Platform> platforms, ArrayList<Villain> villains, int step) {
     
     // changes the horizontal velocities based on brain's decision
-    xpos += think(platforms, step) * 8;
+    int move = think(platforms, step);
+    xpos += move * 8;
+
+    if (abs(move) > 0)
+      totalLeftRightMoves += 1;
       
     // changes the vertical velocity based on acceleration due to gravity
     yvel += accel_g;
@@ -135,8 +140,11 @@ class Player {
   void calculateFitness () {
     float factorJumps = 0;
     if (totalJumps != 0)
-      factorJumps = beneficialJumps/totalJumps;
-    fitness = 1.0/(highestYPos/100.0) + factorJumps;
+      factorJumps = beneficialJumps/totalJumps*10;
+    float factorMoves = totalLeftRightMoves*10;
+    fitness = highestYPos + factorJumps - factorMoves;
+    if (fitness < 0)
+      fitness = 10;
   }
   
   // returns the platforms closest to the player depending on y height

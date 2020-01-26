@@ -14,13 +14,13 @@ void draw () {
 }
 
 public class AI implements Environment {
-  
-    ArrayList<Player> players;
+    
     Game game;
+    Pool pool;
+    ArrayList<Player> players;
     int gen = 1;
     int prevGensHigh = 0;
     int genOfPrevGensHigh = 0;
-    Pool pool;
     
     public AI () {
         game = new Game();
@@ -36,15 +36,31 @@ public class AI implements Environment {
 
     public void evaluateFitness (ArrayList<Genome> population) {
         
+        // clean up the data first
         // adjust the ypos to make sure there are no negative y pos values
-        int leastYPos = Integer.MAX_VALUE;
-        for (Genome genome : population)
-            if (genome.getPlayer().highestYPos < leastYPos)
-                leastYPos = genome.getPlayer().highestYPos;
-        if (leastYPos < 0)
+        int highestYPos = Integer.MAX_VALUE;
+        int lowestYPos = Integer.MIN_VALUE;
+        for (Genome genome : population) {
+            if (genome.getPlayer().highestYPos < highestYPos)
+                highestYPos = genome.getPlayer().highestYPos;
+            if (genome.getPlayer().highestYPos > lowestYPos)
+                lowestYPos = genome.getPlayer().highestYPos;
+        }
+        if (highestYPos < 0) {
+            lowestYPos += -1.1*highestYPos;
             for (Genome genome : population)
-                genome.getPlayer().highestYPos += -1*leastYPos + 10;
+                genome.getPlayer().highestYPos += -1.1*highestYPos;
+        }
+        int bar = 1;
+        while (lowestYPos > 0) {
+            lowestYPos /= 10;
+            bar *= 10;
+        }
         
+        // adjust the player's highestYPos for the fitness calculation in the next block
+        for (Genome genome : population)
+            genome.getPlayer().highestYPos = bar - genome.getPlayer().highestYPos;
+                    
         for (Genome genome : population) {
             genome.getPlayer().calculateFitness();
             genome.setFitness(genome.getPlayer().fitness);
