@@ -11,6 +11,10 @@ class Player {
   ArrayList<Villain> villainsKilled = new ArrayList<Villain>();
   ArrayList<Platform> disappearedPlatforms = new ArrayList<Platform>();
   
+  int totalJumps = 0;
+  int beneficialJumps = 0;
+  int highestYPos = height*3/4;
+  
   Genome brain;
   int[] moves = {-1, 0, 1};
   
@@ -53,6 +57,12 @@ class Player {
     // changes the vertical velocity based on acceleration due to gravity
     yvel += accel_g;
     
+    // if the previous jump resulted in an increase in absolute position (ie score)
+    if (ypos < highestYPos && yvel == 0) {
+      beneficialJumps += 1;
+      highestYPos = ypos;
+    }
+    
     // updates the player position and velocity on collision with a platform
     for (Platform plat : platforms)
       if ((ypos + ylen >= plat.ypos - 10) && (ypos + ylen <= plat.ypos + 25) && (yvel >= 0) && (xpos + xlen + 5 >= plat.xpos) && (xpos <= plat.xpos + Platform.len + 5)) {
@@ -68,6 +78,8 @@ class Player {
           else
             yvel = origYvel;
         }
+        
+        totalJumps += 1;
       }
     
     // checks collison with a villain
@@ -115,7 +127,10 @@ class Player {
   
   // calculates the fitness of the player
   void calculateFitness () {
-    fitness = 1.0/(ypos*ypos);
+    float factorJumps = 0;
+    if (totalJumps != 0)
+      factorJumps = beneficialJumps/totalJumps;
+    fitness = 1.0/(ypos*ypos) + factorJumps;
   }
   
   // returns the platforms closest to the player depending on y height

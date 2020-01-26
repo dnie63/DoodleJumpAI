@@ -163,8 +163,10 @@ class Game {
         plat.ypos += climb;
       for (Villain vil : villains)
         vil.ypos += climb;
-      for (Player player : players)
+      for (Player player : players) {
         player.ypos += climb;
+        player.highestYPos += climb;
+      }
     } else if (highestYPos > height - 75) {
         int decline = height - 75 - highestYPos;
         currHighestScore += decline;
@@ -173,9 +175,33 @@ class Game {
         plat.ypos += decline;
         for (Villain vil : villains)
           vil.ypos += decline;
-        for (Player player : players)
+        for (Player player : players) {
           player.ypos += decline;
+          player.highestYPos += decline;
+        }
     }
+  }
+  
+  // really just for myself
+  float[] getFitnessStats (ArrayList<Player> players) {
+    float totalFitness = 0;
+    float maxFitness = Integer.MIN_VALUE;
+    float minFitness = Integer.MAX_VALUE;
+    int maxBeneficialJumps = Integer.MIN_VALUE;
+    
+    for (Player player : players) {
+      totalFitness += player.fitness;
+      if (player.fitness > maxFitness)
+        maxFitness = player.fitness;
+      if (player.fitness < minFitness)
+        minFitness = player.fitness;
+      if (player.beneficialJumps > maxBeneficialJumps)
+        maxBeneficialJumps = player.beneficialJumps;
+    }
+    
+   float avgFitness = totalFitness / players.size();
+   float[] stats = {avgFitness, maxFitness, minFitness, maxBeneficialJumps};
+   return stats;
   }
   
 }

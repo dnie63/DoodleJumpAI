@@ -44,6 +44,7 @@ public class AI implements Environment {
     public void update () {
         if (game.play(disableVillains, players, gen, prevGensHigh, genOfPrevGensHigh, NEAT_Config.POPULATION, pool.getSpecies().size())) {
             pool.evaluateFitness(this);
+            println(game.getFitnessStats(players));
             pool.breedNewGeneration();
             
             if (pool.getPoolStaleness() > 100) {
