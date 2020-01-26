@@ -3,7 +3,7 @@ AI ai;
 boolean disableVillains = true;
 
 void setup () {
-  size(400, 640);
+  size(420, 640);
   background(255);
   ai = new AI();
 }
@@ -39,11 +39,11 @@ public class AI implements Environment {
         // adjust the ypos to make sure there are no negative y pos values
         int leastYPos = Integer.MAX_VALUE;
         for (Genome genome : population)
-            if (genome.getPlayer().ypos < leastYPos)
-                leastYPos = genome.getPlayer().ypos;
+            if (genome.getPlayer().highestYPos < leastYPos)
+                leastYPos = genome.getPlayer().highestYPos;
         if (leastYPos < 0)
             for (Genome genome : population)
-                genome.getPlayer().ypos += -1*leastYPos + 10;
+                genome.getPlayer().highestYPos += -1*leastYPos + 10;
         
         for (Genome genome : population) {
             genome.getPlayer().calculateFitness();

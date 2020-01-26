@@ -111,12 +111,14 @@ public class Pool {
             if(nchild < 1)
                 continue;
 
+            // makes a new species for the top genome in each species
             survived.add(new Species(s.getTopGenome()));
 
             for (int i = 1; i < nchild; i++)
                 children.add(s.breedChild());
         }
         
+        // adds all the bred and mutated children into the predefined species
         species = survived;
         for (Genome child: children)
             addToSpecies(child);

@@ -114,15 +114,13 @@ class Game {
     // game logic used to train the AI: only nonmoving platforms and as sparsely generated as possible right from the beginning
     int numPlatforms = 6;
     int step = ratio * maxPlatforms / numPlatforms;
-    int index = platforms.size() - 1;
-    if (index < 0)
-      index = 0;
-    while (platforms.get(index).ypos > highestYPos - height) {
-      int[] loc = {(int)(Math.random()*(width - Platform.len)), platforms.get(platforms.size() - 1).ypos - step};
-      int[] directions = {0, 0};
-      platforms.add(new Platform(loc, highestScore, green, directions, 0));
-      index = platforms.size() - 1;
-    }
+    
+    if (platforms.size() > 0)
+      while (platforms.get(platforms.size() - 1).ypos > highestYPos - height) {
+        int[] loc = {(int)(Math.random()*(width - Platform.len)), platforms.get(platforms.size() - 1).ypos - step};
+        int[] directions = {0, 0};
+        platforms.add(new Platform(loc, highestScore, green, directions, 0));
+      }
   }
   
   void villainManager (int highestScore) {

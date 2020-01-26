@@ -246,7 +246,7 @@ public class Genome implements Comparable {
             mutateAddConnection(false);
         if (rand.nextFloat() <= mutationRates.get(MutationKeys.BIAS_CONNECTION_MUTATION_CHANCE))
             mutateAddConnection(true);
-        if (rand.nextFloat() <= mutationRates.get(MutationKeys.NODE_MUTATION_CHANCE))
+        if (rand.nextFloat() <= mutationRates.get(MutationKeys.NODE_MUTATION_CHANCE) && nodes.size() - NEAT_Config.INPUTS - NEAT_Config.OUTPUTS - 1 < NEAT_Config.HIDDEN_NODES)
             mutateAddNode();
         if (rand.nextFloat() <= mutationRates.get(MutationKeys.DISABLE_MUTATION_CHANCE))
             disableMutate();
@@ -257,9 +257,14 @@ public class Genome implements Comparable {
     void mutateWeight() {
         for (ConnectionGene c : connectionGeneList) {
             if (rand.nextFloat() < NEAT_Config.WEIGHT_CHANCE) {
-                if (rand.nextFloat() < NEAT_Config.PERTURB_CHANCE)
+                if (rand.nextFloat() < NEAT_Config.PERTURB_CHANCE) {
                     c.setWeight(c.getWeight() + (2 * rand.nextFloat() - 1) * NEAT_Config.STEPS);
-                else c.setWeight(4 * rand.nextFloat() - 2);
+                    if (c.getWeight() > 1)
+                      c.setWeight(1);
+                    else if (c.getWeight() < -1)
+                      c.setWeight(-1);
+                } else
+                  c.setWeight(2 * rand.nextFloat() - 1);
             }
         }
     }

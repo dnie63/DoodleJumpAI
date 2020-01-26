@@ -53,7 +53,7 @@ class Player {
   void update (ArrayList<Platform> platforms, ArrayList<Villain> villains, int step) {
     
     // changes the horizontal velocities based on brain's decision
-    xpos += think(platforms, step) * 7;
+    xpos += think(platforms, step) * 8;
       
     // changes the vertical velocity based on acceleration due to gravity
     yvel += accel_g;
@@ -136,7 +136,7 @@ class Player {
     float factorJumps = 0;
     if (totalJumps != 0)
       factorJumps = beneficialJumps/totalJumps;
-    fitness = 1.0/(ypos/100.0) + factorJumps;
+    fitness = 1.0/(highestYPos/100.0) + factorJumps;
   }
   
   // returns the platforms closest to the player depending on y height
@@ -144,9 +144,9 @@ class Player {
     ArrayList<Platform> nearest = new ArrayList<Platform>();
     
     for (Platform plat : platforms) {
-      if (abs(plat.ypos - ypos) < (int) (step * 2.5))
+      if (abs(plat.ypos - ypos) < (int) (step * 1.5))
         nearest.add(plat);
-      if (nearest.size() >= 5)
+      if (nearest.size() >= 3)
         return nearest;
     }
         
