@@ -35,6 +35,16 @@ public class AI implements Environment {
     }
 
     public void evaluateFitness (ArrayList<Genome> population) {
+        
+        // adjust the ypos to make sure there are no negative y pos values
+        int leastYPos = Integer.MAX_VALUE;
+        for (Genome genome : population)
+            if (genome.getPlayer().ypos < leastYPos)
+                leastYPos = genome.getPlayer().ypos;
+        if (leastYPos < 0)
+            for (Genome genome : population)
+                genome.getPlayer().ypos += -1*leastYPos + 1;
+        
         for (Genome genome : population) {
             genome.getPlayer().calculateFitness();
             genome.setFitness(pow(genome.getPlayer().fitness, 2));
