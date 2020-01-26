@@ -17,7 +17,7 @@ class Game {
   Game () {
     platforms = new ArrayList<Platform>();
     villains = new ArrayList<Villain>();
-    int[] loc = {width/2, (int) (height * 1.5)};
+    int[] loc = {width/2 - Platform.len/2, height - 20};
     int[] directions = {0, 0};
     platforms.add(new Platform(loc, 0, green, directions, 0));
   }

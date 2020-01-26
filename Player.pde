@@ -4,8 +4,8 @@ class Player {
   final int ylen = 50;
   final int accel_g = 1;
   final color colour = color(153, 90, 233);
-  int xpos = width/2 - xlen;
-  int ypos = height*3/4;
+  int xpos = width/2 - xlen/2;
+  int ypos = height*4/5;
   int yvel = 0;
   boolean alive = true;
   ArrayList<Villain> villainsKilled = new ArrayList<Villain>();
@@ -29,13 +29,10 @@ class Player {
   int think (ArrayList<Platform> platforms, int step) {
     ArrayList<Platform> nearestPlatforms = getNearestPlatforms(platforms, step);
     float[] inputs = new float[NEAT_Config.INPUTS];
-    inputs[0] = xpos;
-    inputs[1] = ypos;
-    inputs[2] = yvel;
-    int index = 3;
+    int index = 0;
     for (Platform plat : nearestPlatforms) {
-      inputs[index] = plat.xpos;
-      inputs[index + 1] = plat.ypos;
+      inputs[index] = plat.xpos - xpos;
+      inputs[index + 1] = ypos - plat.ypos;
       index += 2;
     }
     
