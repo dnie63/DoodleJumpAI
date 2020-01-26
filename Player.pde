@@ -136,7 +136,7 @@ class Player {
     float factorJumps = 0;
     if (totalJumps != 0)
       factorJumps = beneficialJumps/totalJumps;
-    fitness = 1.0/(ypos*ypos) + factorJumps;
+    fitness = 1.0/(ypos/10000.0) + factorJumps;
   }
   
   // returns the platforms closest to the player depending on y height
