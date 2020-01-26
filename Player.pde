@@ -22,7 +22,6 @@ class Player {
   
   int think (ArrayList<Platform> platforms, int step) {
     ArrayList<Platform> nearestPlatforms = getNearestPlatforms(platforms, step);
-    println(nearestPlatforms.size());
     float[] inputs = new float[NEAT_Config.INPUTS];
     inputs[0] = xpos;
     inputs[1] = ypos;
