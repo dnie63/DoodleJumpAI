@@ -14,6 +14,7 @@ class Player {
   int totalJumps = 0;
   int beneficialJumps = 0;
   int highestYPos = height*3/4;
+  int timeOfLastInc = millis();
   
   Genome brain;
   int[] moves = {-1, 0, 1};
@@ -61,6 +62,7 @@ class Player {
     if (ypos < highestYPos && yvel == 0) {
       beneficialJumps += 1;
       highestYPos = ypos;
+      timeOfLastInc = millis();
     }
     
     // updates the player position and velocity on collision with a platform
@@ -115,6 +117,10 @@ class Player {
       xpos = width + xpos;
     if (xpos >= width - xlen/2)
       xpos = xpos - width;
+      
+    // the player dies if it has been stagnant in the last ten seconds
+    if (millis() > timeOfLastInc + 10000)
+      alive = false;
   }
   
   // displays the player on the screen

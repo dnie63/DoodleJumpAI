@@ -8,7 +8,6 @@ class Game {
   int ratio = 32;                        // ratio = height/maxPlatforms
   int highestScore = 0;
   int currHighestScore = 0;
-  int timeOfLastInc = millis();
   color green = color(144, 238, 144);
   color blue = color(107, 202, 226);
   
@@ -58,10 +57,6 @@ class Game {
     platformManager(highestScore, lowestYPos, highestYPos);
     if (!disableVillains)
       villainManager(highestScore);
-    
-    // the game is over if all players have been stagnant in the last ten seconds
-    if (millis() > timeOfLastInc + 10000)
-      gameOver = true;
           
     // display the highest score, the current generation number, and the previous generations' highest score
     fill(0, 0, 0);
@@ -154,10 +149,8 @@ class Game {
     if (highestYPos < 300) {
       int climb = 300 - highestYPos;
       currHighestScore += climb;
-      if (currHighestScore > highestScore) {
+      if (currHighestScore > highestScore)
         highestScore = currHighestScore;
-        timeOfLastInc = millis();
-      }
       
       for (Platform plat : platforms)
         plat.ypos += climb;
