@@ -41,8 +41,8 @@ class Game {
     
     // checks to see if all players are dead and what the current highest ypos is after playing a step of each player
     boolean gameOver = true;
-    int highestYPos = height;
-    int lowestYPos = 0;
+    int highestYPos = Integer.MAX_VALUE;
+    int lowestYPos = Integer.MIN_VALUE;
     for (Player player : players) {
       if (player.alive) {
         gameOver = false;
@@ -60,9 +60,9 @@ class Game {
       villainManager(highestScore);
     
     // the game is over if all players have been stagnant in the last ten seconds
-    if (millis() > timeOfLastInc + 30000)
+    if (millis() > timeOfLastInc + 10000)
       gameOver = true;
-    
+          
     // display the highest score, the current generation number, and the previous generations' highest score
     fill(0, 0, 0);
     textSize(20);
@@ -155,9 +155,10 @@ class Game {
     if (highestYPos < 300) {
       int climb = 300 - highestYPos;
       currHighestScore += climb;
-      if (currHighestScore > highestScore)
+      if (currHighestScore > highestScore) {
         highestScore = currHighestScore;
         timeOfLastInc = millis();
+      }
       
       for (Platform plat : platforms)
         plat.ypos += climb;
