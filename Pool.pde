@@ -119,8 +119,21 @@ public class Pool {
         species = survived;
         for (Genome child: children)
             addToSpecies(child);
+            
+        cleanup();
         
         return children;
+    }
+    
+    // makes sure that all weights are within the bound [-1,1]
+    // (I checked all over the code, this shouldn't be an issue in the first place, but I guess it is)
+    void cleanup() {      
+      for (Genome genome : getAllGenomes())
+        for (ConnectionGene conGene : genome.getConnectionGeneList())
+          if (conGene.getWeight() > 1)
+            conGene.setWeight(1);
+          else if (conGene.getWeight() < -1)
+            conGene.setWeight(-1);
     }
 
     public float getTopFitness(){

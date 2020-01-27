@@ -197,10 +197,12 @@ public class SecondApplet extends PApplet {
       for (ConnectionGene conGene : connectionGeneList) {
         int into = conGene.getInto();
         int out = conGene.getOut();
-        int x1 = nodesAndPos.get(into)[0];
-        int y1 = nodesAndPos.get(into)[1];
-        int x2 = nodesAndPos.get(out)[0];
-        int y2 = nodesAndPos.get(out)[1];
+        int[] intoLoc = nodesAndPos.get(into);
+        int[] outLoc = nodesAndPos.get(out);
+        int x1 = intoLoc[0];
+        int y1 = intoLoc[1];
+        int x2 = outLoc[0];
+        int y2 = outLoc[1];
         stroke(0,0,0);
         strokeWeight(2);
         line(x1 + 20, y1, x2 - 20, y2);
