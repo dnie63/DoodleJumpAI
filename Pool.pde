@@ -14,9 +14,6 @@ public class Pool {
     public void initializePool() {
         for (int i = 0; i < NEAT_Config.POPULATION; i++)
             addToSpecies(new Genome());
-            
-        for (Genome genome : getAllGenomes())
-            genome.Mutate();
     }
 
     public void addToSpecies(Genome g) {

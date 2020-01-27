@@ -53,6 +53,10 @@ public class Genome implements Comparable {
     public void setConnectionGeneList(ArrayList<ConnectionGene> connectionGeneList) {
         this.connectionGeneList = connectionGeneList;
     }
+    
+    public ArrayList<ConnectionGene> getConnectionGeneList() {
+        return connectionGeneList;
+    }
 
     public Genome crossOver(Genome parent2){
         Genome parent1 = this;
