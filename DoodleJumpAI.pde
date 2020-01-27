@@ -2,10 +2,17 @@ import java.util.ArrayList;
 AI ai;
 boolean disableVillains = true;
 
-void setup () {
+void settings() {
   size(420, 640);
+}
+
+void setup () {
   background(255);
   ai = new AI();
+  
+  String[] args = {"Neural Network"};
+  SecondApplet sa = new SecondApplet();
+  PApplet.runSketch(args, sa);
 }
 
 void draw () {
@@ -99,4 +106,16 @@ public class AI implements Environment {
         }
     }
     
+}
+
+public class SecondApplet extends PApplet {
+  
+  public void settings() {
+    size(420, 420);
+  }
+
+  public void draw() {
+    background(255);
+  }
+  
 }
