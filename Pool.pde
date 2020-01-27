@@ -112,7 +112,7 @@ public class Pool {
                 continue;
 
             // makes a new species for the top genome in each species
-            survived.add(new Species(s.getTopGenome()));
+            survived.add(new Species(new Genome(s.getTopGenome())));
 
             for (int i = 1; i < nchild; i++)
                 children.add(s.breedChild());
