@@ -33,6 +33,10 @@ public class Genome implements Comparable {
 
         this.mutationRates = (HashMap<MutationKeys, Float>) child.mutationRates.clone();
     }
+    
+    public TreeMap<Integer, NodeGene> getNodes() {
+      return nodes;
+    }
 
     public void setPlayer (Player player) {
         this.player = player;
@@ -267,8 +271,9 @@ public class Genome implements Comparable {
                       c.setWeight(1);
                     else if (c.getWeight() < -1)
                       c.setWeight(-1);
-                } else
+                } else {
                   c.setWeight(2 * rand.nextFloat() - 1);
+                }
             }
         }
     }

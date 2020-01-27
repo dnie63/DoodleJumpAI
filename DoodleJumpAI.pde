@@ -125,6 +125,9 @@ public class SecondApplet extends PApplet {
     
     if (topGenomeFromPrevGen != null) {
       topGenomeFromPrevGen.generateNetwork();
+      TreeMap<Integer, NodeGene> nodes = topGenomeFromPrevGen.getNodes();
+      ArrayList<ConnectionGene> connectionGeneList = topGenomeFromPrevGen.getConnectionGeneList();
+      TreeMap<Integer, int[]> nodesAndPos = new TreeMap<Integer, int[]>();
       
       // display the input layer plus the bias
       int x = 40;
@@ -138,8 +141,10 @@ public class SecondApplet extends PApplet {
         textAlign(CENTER);
         fill(0, 0, 0);
         textSize(20);
-        text(str(i+1), x, y+7);
+        text(i, x, y+7);
         
+        int[] loc = {x,y};
+        nodesAndPos.put(i, loc);
         y += (height2 - 80)/(NEAT_Config.INPUTS);
       }
       
@@ -155,12 +160,53 @@ public class SecondApplet extends PApplet {
         textAlign(CENTER);
         fill(0, 0, 0);
         textSize(20);
-        text(str(i+1), x, y+7);
+        text(i, x, y+7);
         
+        int[] loc = {x,y};
+        nodesAndPos.put(i, loc);
         y += (height2 - 160)/(NEAT_Config.OUTPUTS - 1);
       }
       
       // display the hidden layer
+      int index = 0;
+      int[] xvals = {width2 - 140, width2 - 280};
+      y = 40;
+      for (int i = NEAT_Config.INPUTS + 1; i < NEAT_Config.INPUTS + NEAT_Config.HIDDEN_NODES + 1; i++) {
+        if (nodes.containsKey(i)) {
+          x = xvals[index];
+          
+          fill(255,255,255);
+          stroke(0,0,0);
+          strokeWeight(2);
+          ellipse(x,y,40,40);
+          
+          textAlign(CENTER);
+          fill(0, 0, 0);
+          textSize(20);
+          text(i, x, y+7);
+          
+          int[] loc = {x,y};
+          nodesAndPos.put(i, loc);
+          index = (index+1)%2;
+          if (nodes.size() - (NEAT_Config.INPUTS + NEAT_Config.OUTPUTS + 1) - 1 > 0)
+            y += (height2 - 80)/(nodes.size() - (NEAT_Config.INPUTS + NEAT_Config.OUTPUTS + 1) - 1);
+        }
+      }
+      
+      for (ConnectionGene conGene : connectionGeneList) {
+        int into = conGene.getInto();
+        int out = conGene.getOut();
+        int x1 = nodesAndPos.get(into)[0];
+        int y1 = nodesAndPos.get(into)[1];
+        int x2 = nodesAndPos.get(out)[0];
+        int y2 = nodesAndPos.get(out)[1];
+        stroke(0,0,0);
+        strokeWeight(2);
+        line(x1 + 20, y1, x2 - 20, y2);
+        textSize(20);
+        textAlign(CENTER);
+        text(conGene.getWeight(), (x1 + x2)/2, (y1 + y2)/2);
+      }
     }
   }
   
