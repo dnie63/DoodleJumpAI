@@ -77,7 +77,7 @@ public class AI implements Environment {
     
     public void update () {
         boolean gameOver = game.play(disableVillains, players, gen, prevGensHigh, genOfPrevGensHigh, NEAT_Config.POPULATION, pool.getSpecies().size());
-        sa.setGenomeToDisplay(new Genome(game.getHighestPlayer().brain));
+        sa.setGenomeToDisplay(game.getHighestPlayer().brain);
         if (gameOver) {
             pool.evaluateFitness(this);
             pool.breedNewGeneration();
@@ -194,27 +194,31 @@ public class SecondApplet extends PApplet {
         }
       }
       
+      // display the connections
       for (ConnectionGene conGene : connectionGeneList) {
-        int into = conGene.getInto();
-        int out = conGene.getOut();
-        int[] intoLoc = nodesAndPos.get(into);
-        int[] outLoc = nodesAndPos.get(out);
-        int x1 = intoLoc[0];
-        int y1 = intoLoc[1];
-        int x2 = outLoc[0];
-        int y2 = outLoc[1];
-        stroke(0,0,0);
-        strokeWeight(2);
-        line(x1 + 20, y1, x2 - 20, y2);
-        textSize(20);
-        textAlign(CENTER);
-        text(conGene.getWeight(), (x1 + x2)/2, (y1 + y2)/2);
+        int[] intoLoc = nodesAndPos.get(conGene.getInto());
+        int[] outLoc = nodesAndPos.get(conGene.getOut());
+        
+        // fixes this really random bug that only happens like once every 20 generations where nodes is randomly empty and so outLoc becomes null
+        // and results in a NullPointerException (unless there is a legitimate bug somewhere in the code that I can't find after hours of looking)
+        if (!(intoLoc == null || outLoc == null)) {
+          int x1 = intoLoc[0];
+          int y1 = intoLoc[1];
+          int x2 = outLoc[0];
+          int y2 = outLoc[1];
+          stroke(0,0,0);
+          strokeWeight(2);
+          line(x1 + 20, y1, x2 - 20, y2);
+          textSize(20);
+          textAlign(CENTER);
+          text(conGene.getWeight(), (x1 + x2)/2, (y1 + y2)/2);
+        }
       }
     }
   }
   
   public void setGenomeToDisplay(Genome genome) {
-    genomeToDisplay = genome;
+    genomeToDisplay = new Genome(genome);
   }
   
 }
