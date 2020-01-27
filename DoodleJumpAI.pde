@@ -77,7 +77,7 @@ public class AI implements Environment {
     
     public void update () {
         boolean gameOver = game.play(disableVillains, players, gen, prevGensHigh, genOfPrevGensHigh, NEAT_Config.POPULATION, pool.getSpecies().size());
-        sa.setGenomeToDisplay(game.getHighestPlayer().brain);
+        sa.setGenomeToDisplay(new Genome(game.getHighestPlayer().brain));
         if (gameOver) {
             pool.evaluateFitness(this);
             pool.breedNewGeneration();
