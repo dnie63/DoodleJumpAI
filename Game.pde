@@ -11,6 +11,8 @@ class Game {
   color green = color(144, 238, 144);
   color blue = color(107, 202, 226);
   
+  Player highestPlayer;
+  
   int numPlatforms = 6;
   int step = ratio * maxPlatforms / numPlatforms;
   
@@ -46,8 +48,10 @@ class Game {
       if (player.alive) {
         gameOver = false;
         player.update(platforms, villains, step);
-        if (player.ypos < highestYPos)
+        if (player.ypos < highestYPos) {
           highestYPos = player.ypos;
+          highestPlayer = player;
+        }
         if (player.ypos > lowestYPos)
           lowestYPos = player.ypos;
       }
@@ -70,6 +74,10 @@ class Game {
     text("Prev Gens' Highest: " + str(prevGensHigh) + " (Gen " + str(genOfPrevGensHigh) + ")", 10, 140);
     
     return gameOver;
+  }
+  
+  Player getHighestPlayer() {
+    return highestPlayer;
   }
   
   void platformManager (int highestScore, int lowestYPos, int highestYPos) {

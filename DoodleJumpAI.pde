@@ -76,9 +76,10 @@ public class AI implements Environment {
     }
     
     public void update () {
-        if (game.play(disableVillains, players, gen, prevGensHigh, genOfPrevGensHigh, NEAT_Config.POPULATION, pool.getSpecies().size())) {
+        boolean gameOver = game.play(disableVillains, players, gen, prevGensHigh, genOfPrevGensHigh, NEAT_Config.POPULATION, pool.getSpecies().size());
+        sa.setGenomeToDisplay(game.getHighestPlayer().brain);
+        if (gameOver) {
             pool.evaluateFitness(this);
-            sa.setTopGenome(new Genome(pool.getTopGenome()));
             pool.breedNewGeneration();
             
             if (pool.getPoolStaleness() > 100) {
@@ -111,7 +112,7 @@ public class AI implements Environment {
 
 public class SecondApplet extends PApplet {
   
-  Genome topGenomeFromPrevGen = null;
+  Genome genomeToDisplay;
   int width2 = 420;
   int height2 = 420;
   
@@ -123,10 +124,10 @@ public class SecondApplet extends PApplet {
   public void draw() {
     background(255);
     
-    if (topGenomeFromPrevGen != null) {
-      topGenomeFromPrevGen.generateNetwork();
-      TreeMap<Integer, NodeGene> nodes = topGenomeFromPrevGen.getNodes();
-      ArrayList<ConnectionGene> connectionGeneList = topGenomeFromPrevGen.getConnectionGeneList();
+    if (genomeToDisplay != null) {
+      genomeToDisplay.generateNetwork();
+      TreeMap<Integer, NodeGene> nodes = genomeToDisplay.getNodes();
+      ArrayList<ConnectionGene> connectionGeneList = genomeToDisplay.getConnectionGeneList();
       TreeMap<Integer, int[]> nodesAndPos = new TreeMap<Integer, int[]>();
       
       // display the input layer plus the bias
@@ -210,8 +211,8 @@ public class SecondApplet extends PApplet {
     }
   }
   
-  public void setTopGenome(Genome genome) {
-    topGenomeFromPrevGen = genome;
+  public void setGenomeToDisplay(Genome genome) {
+    genomeToDisplay = genome;
   }
   
 }
