@@ -111,7 +111,7 @@ class Player {
     // updates the player's vertical position each frame based on its y velocity
     // and determines if the player is still alive afterwards
     ypos += yvel;
-    if (yvel > 27)
+    if (yvel > 24)
       alive = false;
     
     // wraps left and right
