@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 AI ai;
-boolean disableVillains = true;
+boolean disableVillains = false;
 SecondApplet sa;
 PImage notebook;
 

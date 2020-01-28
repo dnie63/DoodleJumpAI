@@ -20,6 +20,7 @@ class Player {
   int totalLeftRightMoves = 0;
   int numPassedWalls = 0;
   int lastMove = 1;
+  int sight = 150;
   
   Genome brain;
   int[] moves = {-1, 0, 1};
@@ -30,8 +31,8 @@ class Player {
     this.brain = brain;
   }
   
-  int think (ArrayList<Platform> platforms, int step) {
-    ArrayList<Platform> nearestPlatforms = getNearestPlatforms(platforms, step);
+  int think (ArrayList<Platform> platforms) {
+    ArrayList<Platform> nearestPlatforms = getNearestPlatforms(platforms);
     float[] inputs = new float[NEAT_Config.INPUTS];
     int index = 0;
     for (Platform plat : nearestPlatforms) {
@@ -52,10 +53,10 @@ class Player {
     return moves[maxIndex];
   }
   
-  void update (ArrayList<Platform> platforms, ArrayList<Villain> villains, int step) {
+  void update (ArrayList<Platform> platforms, ArrayList<Villain> villains) {
     
     // changes the horizontal velocities based on brain's decision
-    int move = think(platforms, step);
+    int move = think(platforms);
     xpos += move * 7;
 
     if (abs(move) > 0)
@@ -78,9 +79,9 @@ class Player {
     
     // updates the player position and velocity on collision with a platform
     for (Platform plat : platforms)
-      if ((ypos + ylen >= plat.ypos - 10) && (ypos + ylen <= plat.ypos + 25) && (yvel >= 0) && (xpos + xlen >= plat.xpos) && (xpos <= plat.xpos + Platform.len)) {
+      if ((ypos + ylen >= plat.ypos - 10) && (ypos + ylen <= plat.ypos + 25) && (yvel >= 0) && (xpos + xlen - 5 >= plat.xpos) && (xpos <= plat.xpos + Platform.len - 5)) {
         int origYvel = yvel;
-        yvel = -18;
+        yvel = -19;
         if (plat.will_disappear == 1) {
           boolean hasHitBefore = false;
           for (Platform disappeared : disappearedPlatforms)
@@ -102,7 +103,7 @@ class Player {
       // self.left <= vil.right, right >= left, bottom >=(below) top bound, bottom <=(above) bottom bound
       if ((xpos <= vil.xpos + Villain.len) && (xpos + xlen >= vil.xpos - 10) && (ypos + ylen >= vil.ypos - 10) && (ypos + ylen <= vil.ypos + Villain.len * 2/5) && (yvel >= 0)) {
         villainsKilled.add(vil);
-        yvel = -18 - 5;
+        yvel = -19 - 5;
       }
       
       // else if, player dies
@@ -155,11 +156,11 @@ class Player {
   }
   
   // returns the platforms closest to the player depending on y height
-  ArrayList<Platform> getNearestPlatforms (ArrayList<Platform> platforms, int step) {
+  ArrayList<Platform> getNearestPlatforms (ArrayList<Platform> platforms) {
     ArrayList<Platform> nearest = new ArrayList<Platform>();
     
     for (Platform plat : platforms) {
-      if (abs(plat.ypos - ypos) < (int) (step * 1.5))
+      if (abs(plat.ypos - ypos) < sight)
         nearest.add(plat);
       if (nearest.size() >= 3)
         return nearest;

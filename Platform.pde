@@ -15,16 +15,13 @@ class Platform {
     direction = directions[int(random(2))];
     this.speed = speed;
     this.colour = colour;
-    /*
+    
     // adds in disappearing platforms once score is >= 3000 (black is nonmoving, purple is moving)
     if (score >= 3000)
       if (random(100) >= 80) {
         will_disappear = 1;
-        if (speed == 0)
-          this.colour = color(0, 0, 0);
-        else
-          this.colour = color(138,43,226);
-      }*/
+        this.colour = color(255, 255, 255);
+      }
   }
         
   void display () {

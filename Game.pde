@@ -2,19 +2,16 @@ class Game {
   
   ArrayList<Platform> platforms;
   ArrayList<Villain> villains;
-  int maxPlatforms = 20;
+  int maxPlatforms = 10;
   int minPlatforms = 6;
   int maxVillains = 1;
-  int ratio = 32;                        // ratio = height/maxPlatforms
+  int ratio = 64;                        // ratio = height/maxPlatforms
   int highestScore = 0;
   int currHighestScore = 0;
   color green = color(144, 238, 144);
   color blue = color(107, 202, 226);
   
   Player highestPlayer;
-  
-  int numPlatforms = 6;
-  int step = ratio * maxPlatforms / numPlatforms;
   
   Game () {
     platforms = new ArrayList<Platform>();
@@ -47,7 +44,7 @@ class Game {
     for (Player player : players) {
       if (player.alive) {
         gameOver = false;
-        player.update(platforms, villains, step);
+        player.update(platforms, villains);
         if (player.ypos < highestYPos) {
           highestYPos = player.ypos;
           highestPlayer = player;
@@ -59,9 +56,9 @@ class Game {
     
     if (!gameOver) {
       adjustView(highestYPos, players);
-      platformManager(highestScore, lowestYPos, highestYPos);
+      platformManager(lowestYPos, highestYPos);
       if (!disableVillains)
-        villainManager(highestScore);
+        villainManager(lowestYPos, highestYPos);
     }
           
     // display the highest score, the current generation number, and the previous generations' highest score
@@ -80,20 +77,18 @@ class Game {
     return highestPlayer;
   }
   
-  void platformManager (int highestScore, int lowestYPos, int highestYPos) {
+  void platformManager (int lowestYPos, int highestYPos) {
     
     // deletes unnecessary platforms
     for (int i = platforms.size() - 1; i >= 0; i--)
       if (platforms.get(i).ypos > lowestYPos + height)
         platforms.remove(i);
     
-    // normal game logic
-    /*
     // adds in moving and non moving platforms once score is >= 1000
     if (highestScore >= 1000) {
       int decrement = Math.min(maxPlatforms - minPlatforms, highestScore/500);
       
-      while (platforms.size() < maxPlatforms - decrement) {
+      while (platforms.get(platforms.size() - 1).ypos > highestYPos - height) {
         float factor = 1.0 * ratio * maxPlatforms / (maxPlatforms - decrement);
         
         if (Math.random()*100 >= 20) {
@@ -109,42 +104,41 @@ class Game {
           platforms.add(new Platform(loc, highestScore, blue, directions, 2));
         }
       }
-    }
-      
-    // only adds in non moving platforms at the beginning
-    else {
-      while (platforms.size() < maxPlatforms) {
+    
+    // else only adds in non moving platforms
+    } else {
+      while (platforms.get(platforms.size() - 1).ypos > highestYPos - height) {
         int[] loc = {(int)(Math.random()*(width - Platform.len)), platforms.get(platforms.size() - 1).ypos - ratio};
         int[] directions = {0, 0};
         platforms.add(new Platform(loc, highestScore, green, directions, 0));
       }
     }
-    */
-    
-    // game logic used to train the AI: only nonmoving platforms and as sparsely generated as possible right from the beginning
-    if (platforms.size() > 0)
-      while (platforms.get(platforms.size() - 1).ypos > highestYPos - height) {
-        int[] loc = {(int)(Math.random()*(width - Platform.len)), platforms.get(platforms.size() - 1).ypos - step};
-        int[] directions = {0, 0};
-        platforms.add(new Platform(loc, highestScore, green, directions, 0));
-      }
   }
   
-  void villainManager (int highestScore) {
-    
+  void villainManager (int lowestYPos, int highestYPos) {
+
     // checks if villains have fallen off the bottom of the screen and deletes them
     for (int i = villains.size() - 1; i >= 0; i--)
-      if (villains.get(i).ypos > height)
+      if (villains.get(i).ypos > lowestYPos + height)
         villains.remove(i);
       
     // adds in villains once score is >= 2000
-    if (highestScore >= 2000)
-      while (villains.size() < maxVillains) {
+    if (highestScore >= 2000) {
+      if (villains.size() == 0) {
         int lowX = Villain.len/2;
         int highX = (int)(width - Villain.len * 1.5);
         int[] loc = {(int)(Math.random()*(highX - lowX) + lowX), -1 * Villain.len};
         villains.add(new Villain(loc));
+      
+      } else {
+        while (villains.get(villains.size() - 1).ypos > highestYPos - height) {
+          int lowX = Villain.len/2;
+          int highX = (int)(width - Villain.len * 1.5);
+          int[] loc = {(int)(Math.random()*(highX - lowX) + lowX), (int) (villains.get(villains.size() - 1).ypos - random(height, 3*height))};
+          villains.add(new Villain(loc));
+        }
       }
+    }
   }
   
   //adjusts the view according to the highestYPos
