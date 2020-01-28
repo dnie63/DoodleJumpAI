@@ -1,7 +1,9 @@
 class Player {
   
-  final int xlen = 40;
-  final int ylen = 50;
+  PImage rightPic = loadImage("right_dj_guy.png");
+  PImage leftPic = loadImage("left_dj_guy.png");
+  final int xlen = 60;
+  final int ylen = 60;
   final int accel_g = 1;
   final color colour = color(153, 90, 233);
   int xpos = width/2 - xlen/2;
@@ -16,6 +18,8 @@ class Player {
   int highestYPos = height*3/4;
   int timeOfLastInc = millis();
   int totalLeftRightMoves = 0;
+  int numPassedWalls = 0;
+  int lastMove = 1;
   
   Genome brain;
   int[] moves = {-1, 0, 1};
@@ -56,6 +60,11 @@ class Player {
 
     if (abs(move) > 0)
       totalLeftRightMoves += 1;
+      
+    if (move > 0)
+      lastMove = 1;
+    if (move < 0)
+      lastMove = -1;
       
     // changes the vertical velocity based on acceleration due to gravity
     yvel += accel_g;
@@ -115,10 +124,14 @@ class Player {
       alive = false;
     
     // wraps left and right
-    if (xpos + xlen/2 <= 0)
+    if (xpos + xlen/2 <= 0) {
       xpos = width + xpos;
-    if (xpos >= width - xlen/2)
+      numPassedWalls += 1;
+    }
+    if (xpos >= width - xlen/2) {
       xpos = xpos - width;
+      numPassedWalls += 1;
+    }
       
     // the player dies if it has been stagnant in the last ten seconds
     if (millis() > timeOfLastInc + 10000)
@@ -130,12 +143,15 @@ class Player {
     stroke(0);
     strokeWeight(5);
     fill(colour);
-    rect(xpos, ypos, xlen, ylen, 5);
+    if (lastMove > 0)
+      image(rightPic, xpos, ypos);
+    else
+      image(leftPic, xpos, ypos);
   }
   
   // calculates the fitness of the player
   void calculateFitness (int bar) {
-    fitness = highestYPos + beneficialJumps*bar/100;
+    fitness = highestYPos + beneficialJumps*bar/100 + numPassedWalls*bar/50;
   }
   
   // returns the platforms closest to the player depending on y height

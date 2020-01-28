@@ -2,13 +2,14 @@ import java.util.ArrayList;
 AI ai;
 boolean disableVillains = true;
 SecondApplet sa;
+PImage notebook;
 
 void settings() {
   size(420, 640);
 }
 
 void setup () {
-  background(255);
+  notebook = loadImage("dj_background.png");
   ai = new AI();
   
   String[] args = {"Neural Network"};
@@ -17,7 +18,7 @@ void setup () {
 }
 
 void draw () {
-  background(255);
+  background(notebook);
   ai.update();
 }
 
@@ -113,8 +114,8 @@ public class AI implements Environment {
 public class SecondApplet extends PApplet {
   
   Genome genomeToDisplay;
-  int width2 = 420;
-  int height2 = 420;
+  int width2 = 500;
+  int height2 = 500;
   
   public void settings() {
     size(width2, height2);
