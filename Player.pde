@@ -78,9 +78,9 @@ class Player {
     
     // updates the player position and velocity on collision with a platform
     for (Platform plat : platforms)
-      if ((ypos + ylen >= plat.ypos - 10) && (ypos + ylen <= plat.ypos + 25) && (yvel >= 0) && (xpos + xlen + 5 >= plat.xpos) && (xpos <= plat.xpos + Platform.len + 5)) {
+      if ((ypos + ylen >= plat.ypos - 10) && (ypos + ylen <= plat.ypos + 25) && (yvel >= 0) && (xpos + xlen >= plat.xpos) && (xpos <= plat.xpos + Platform.len)) {
         int origYvel = yvel;
-        yvel = -20;
+        yvel = -18;
         if (plat.will_disappear == 1) {
           boolean hasHitBefore = false;
           for (Platform disappeared : disappearedPlatforms)
@@ -102,7 +102,7 @@ class Player {
       // self.left <= vil.right, right >= left, bottom >=(below) top bound, bottom <=(above) bottom bound
       if ((xpos <= vil.xpos + Villain.len) && (xpos + xlen >= vil.xpos - 10) && (ypos + ylen >= vil.ypos - 10) && (ypos + ylen <= vil.ypos + Villain.len * 2/5) && (yvel >= 0)) {
         villainsKilled.add(vil);
-        yvel = -20 - 5;
+        yvel = -18 - 5;
       }
       
       // else if, player dies
@@ -151,7 +151,7 @@ class Player {
   
   // calculates the fitness of the player
   void calculateFitness (int bar) {
-    fitness = highestYPos + beneficialJumps*bar/100 + numPassedWalls*bar/50;
+    fitness = highestYPos + beneficialJumps*bar/100;
   }
   
   // returns the platforms closest to the player depending on y height
