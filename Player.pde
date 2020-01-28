@@ -180,8 +180,12 @@ class Player {
     ArrayList<Villain> nearest = new ArrayList<Villain>();
     
     for (Villain vil : villains) {
-      if (abs(vil.ypos - ypos) < sight)
+      if (abs(vil.ypos - ypos) < sight) {
         nearest.add(vil);
+        for (Villain killed : villainsKilled)
+          if (killed.equals(vil))
+            nearest.remove(vil);
+      }
       if (nearest.size() >= 1)
         return nearest;
     }
