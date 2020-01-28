@@ -31,13 +31,19 @@ class Player {
     this.brain = brain;
   }
   
-  int think (ArrayList<Platform> platforms) {
+  int think (ArrayList<Platform> platforms, ArrayList<Villain> villains) {
     ArrayList<Platform> nearestPlatforms = getNearestPlatforms(platforms);
+    ArrayList<Villain> nearestVillains = getNearestVillains(villains);
     float[] inputs = new float[NEAT_Config.INPUTS];
     int index = 0;
     for (Platform plat : nearestPlatforms) {
       inputs[index] = plat.xpos - xpos;
       inputs[index + 1] = ypos - plat.ypos;
+      index += 2;
+    }
+    for (Villain vil : nearestVillains) {
+      inputs[index] = vil.xpos - xpos;
+      inputs[index + 1] = ypos - vil.ypos;
       index += 2;
     }
     
@@ -56,7 +62,7 @@ class Player {
   void update (ArrayList<Platform> platforms, ArrayList<Villain> villains) {
     
     // changes the horizontal velocities based on brain's decision
-    int move = think(platforms);
+    int move = think(platforms, villains);
     xpos += move * 7;
 
     if (abs(move) > 0)
@@ -163,6 +169,20 @@ class Player {
       if (abs(plat.ypos - ypos) < sight)
         nearest.add(plat);
       if (nearest.size() >= 3)
+        return nearest;
+    }
+        
+    return nearest;
+  }
+  
+  // returns the villains closest to the player depending on y height
+  ArrayList<Villain> getNearestVillains (ArrayList<Villain> villains) {
+    ArrayList<Villain> nearest = new ArrayList<Villain>();
+    
+    for (Villain vil : villains) {
+      if (abs(vil.ypos - ypos) < sight)
+        nearest.add(vil);
+      if (nearest.size() >= 1)
         return nearest;
     }
         

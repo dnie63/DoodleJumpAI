@@ -1,8 +1,8 @@
 public class NEAT_Config {
 
-    public static final int INPUTS = 6;
+    public static final int INPUTS = 8;
     public static final int OUTPUTS = 3;
-    public static final int HIDDEN_NODES = 9;
+    public static final int HIDDEN_NODES = 13;
     public static final int POPULATION = 1000;
 
     public static final float COMPATIBILITY_THRESHOLD = 1;
