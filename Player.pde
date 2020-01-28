@@ -101,14 +101,14 @@ class Player {
       
       // if on top, kills the villain and jumps up (more so than usual also)
       // self.left <= vil.right, right >= left, bottom >=(below) top bound, bottom <=(above) bottom bound
-      if ((xpos <= vil.xpos + Villain.len) && (xpos + xlen >= vil.xpos - 10) && (ypos + ylen >= vil.ypos - 10) && (ypos + ylen <= vil.ypos + Villain.len * 2/5) && (yvel >= 0)) {
+      if ((xpos <= vil.xpos + Villain.villWidth) && (xpos + xlen >= vil.xpos - 10) && (ypos + ylen >= vil.ypos - 10) && (ypos + ylen <= vil.ypos + Villain.villHeight * 2/5) && (yvel >= 0)) {
         villainsKilled.add(vil);
         yvel = -19 - 5;
       }
       
       // else if, player dies
       // left <= right, right >= left, top <=(above) bottom, bottom >=(below) top
-      else if ((xpos <= vil.xpos + Villain.len) && (xpos + xlen >= vil.xpos - 10) && (ypos <= vil.ypos + Villain.len - 10) && (ypos + ylen >= vil.ypos)) {
+      else if ((xpos <= vil.xpos + Villain.villWidth) && (xpos + xlen >= vil.xpos - 10) && (ypos <= vil.ypos + Villain.villHeight - 10) && (ypos + ylen >= vil.ypos)) {
         alive = false;
         
         // revives the player if this player has killed this villain before

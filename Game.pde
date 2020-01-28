@@ -10,6 +10,7 @@ class Game {
   int currHighestScore = 0;
   color green = color(144, 238, 144);
   color blue = color(107, 202, 226);
+  PImage[] villainImages = {loadImage("mons1.PNG"), loadImage("mons2.PNG"), loadImage("mons3.PNG"), loadImage("mons4.PNG"), loadImage("mons5.PNG"), loadImage("mons6.PNG")};
   
   Player highestPlayer;
   
@@ -121,21 +122,22 @@ class Game {
     for (int i = villains.size() - 1; i >= 0; i--)
       if (villains.get(i).ypos > lowestYPos + height)
         villains.remove(i);
-      
+    
     // adds in villains once score is >= 2000
+    int[] speeds = {0,2};
     if (highestScore >= 2000) {
       if (villains.size() == 0) {
-        int lowX = Villain.len/2;
-        int highX = (int)(width - Villain.len * 1.5);
-        int[] loc = {(int)(Math.random()*(highX - lowX) + lowX), -1 * Villain.len};
-        villains.add(new Villain(loc));
+        int lowX = Villain.villWidth/2;
+        int highX = (int)(width - Villain.villWidth * 1.5);
+        int[] loc = {(int)(Math.random()*(highX - lowX) + lowX), -1 * Villain.villHeight};
+        villains.add(new Villain(loc, villainImages[(int)(random(villainImages.length))], speeds[(int)(random(2))]));
       
       } else {
         while (villains.get(villains.size() - 1).ypos > highestYPos - height) {
-          int lowX = Villain.len/2;
-          int highX = (int)(width - Villain.len * 1.5);
+          int lowX = Villain.villWidth/2;
+          int highX = (int)(width - Villain.villWidth * 1.5);
           int[] loc = {(int)(Math.random()*(highX - lowX) + lowX), (int) (villains.get(villains.size() - 1).ypos - random(height, 3*height))};
-          villains.add(new Villain(loc));
+          villains.add(new Villain(loc, villainImages[(int)(random(villainImages.length))], speeds[(int)(random(2))]));
         }
       }
     }
