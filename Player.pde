@@ -22,6 +22,7 @@ class Player {
   int numPassedWalls = 0;
   int lastMove = 1;
   int sight = 150;
+  int lastMoveNeuralDisplay = -1;
   
   Genome brain;
   int[] moves = {-1, 0, 1};
@@ -76,6 +77,8 @@ class Player {
       lastMove = 1;
     if (move < 0)
       lastMove = -1;
+      
+    lastMoveNeuralDisplay = move;
       
     // changes the vertical velocity based on acceleration due to gravity
     yvel += accel_g;

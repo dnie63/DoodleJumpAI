@@ -93,14 +93,14 @@ class Game {
         float factor = 1.0 * ratio * maxPlatforms / (maxPlatforms - decrement);
         
         if (Math.random()*100 >= 20) {
-          int[] loc = {(int)(Math.random()*(width - Platform.len)), (int)(platforms.get(platforms.size() - 1).ypos - factor)};
+          int[] loc = {(int)(Math.random()*(width - Platform.len)), (int)(platforms.get(platforms.size() - 1).ypos - random(factor - 10, factor + 10))};
           int[] directions = {0, 0};
           platforms.add(new Platform(loc, highestScore, green, directions, 0));
         
         } else {
           int lowX = Platform.len/2;
           int highX = (int)(width - Platform.len * 1.5);
-          int[] loc = {(int)(Math.random()*(highX - lowX) + lowX), (int)(platforms.get(platforms.size() - 1).ypos - factor)};
+          int[] loc = {(int)(Math.random()*(highX - lowX) + lowX), (int)(platforms.get(platforms.size() - 1).ypos - random(factor - 10, factor + 10))};
           int[] directions = {-1, 1};
           platforms.add(new Platform(loc, highestScore, blue, directions, 2));
         }
