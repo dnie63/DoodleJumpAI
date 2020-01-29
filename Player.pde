@@ -12,6 +12,7 @@ class Player {
   boolean alive = true;
   ArrayList<Villain> villainsKilled = new ArrayList<Villain>();
   ArrayList<Platform> disappearedPlatforms = new ArrayList<Platform>();
+  ArrayList<Villain> villainsSeen = new ArrayList<Villain>();
   
   int totalJumps = 0;
   int beneficialJumps = 0;
@@ -45,6 +46,9 @@ class Player {
       inputs[index] = vil.xpos - xpos;
       inputs[index + 1] = ypos - vil.ypos;
       index += 2;
+      
+      if (!villainsSeen.contains(vil))
+        villainsSeen.add(vil);
     }
     
     float[] moveProbabilities = brain.evaluateNetwork(inputs);
@@ -87,7 +91,7 @@ class Player {
     for (Platform plat : platforms)
       if ((ypos + ylen >= plat.ypos - 10) && (ypos + ylen <= plat.ypos + 25) && (yvel >= 0) && (xpos + xlen - 5 >= plat.xpos) && (xpos <= plat.xpos + Platform.len - 5)) {
         int origYvel = yvel;
-        yvel = -19;
+        yvel = -20;
         if (plat.will_disappear == 1) {
           boolean hasHitBefore = false;
           for (Platform disappeared : disappearedPlatforms)
@@ -109,7 +113,7 @@ class Player {
       // self.left <= vil.right, right >= left, bottom >=(below) top bound, bottom <=(above) bottom bound
       if ((xpos <= vil.xpos + Villain.villWidth) && (xpos + xlen >= vil.xpos - 10) && (ypos + ylen >= vil.ypos - 10) && (ypos + ylen <= vil.ypos + Villain.villHeight * 2/5) && (yvel >= 0)) {
         villainsKilled.add(vil);
-        yvel = -19 - 5;
+        yvel = -22;
       }
       
       // else if, player dies
@@ -158,7 +162,7 @@ class Player {
   
   // calculates the fitness of the player
   void calculateFitness (int bar) {
-    fitness = highestYPos + beneficialJumps*bar/100;
+    fitness = highestYPos;
   }
   
   // returns the platforms closest to the player depending on y height

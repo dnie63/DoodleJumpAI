@@ -124,7 +124,7 @@ class Game {
         villains.remove(i);
     
     // adds in villains once score is >= 2000
-    int[] speeds = {0,2};
+    int[] speeds = {1,2};
     if (highestScore >= 2000) {
       if (villains.size() == 0) {
         int lowX = Villain.villWidth/2;
