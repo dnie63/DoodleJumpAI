@@ -14,8 +14,8 @@
 This simple version of Doodle Jump includes everything but black holes, springs, jet packs, helicopter hats, and shooting. NEAT (NeuroEvolution of Augmenting Topologies) is a genetic algorithm that builds up neural networks from scratch and only allows those who do the best in each generation to reproduce and mutate to form the next generation's neural networks.
 
 ## Screenshots
-![Doodle Jump screenshot](./imgs/doodlejump.png)
-![Neural Network screenshot](./imgs/neuralnet.png)
+![Doodle Jump screenshot](./imgs/doodlejump.PNG)
+![Neural Network screenshot](./imgs/neuralnet.PNG)
 
 ## Setup
 All you need is the latest version of Processing and to download the entire repo.
