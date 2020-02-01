@@ -1,4 +1,4 @@
-# Project Name
+# Doodle Jump AI
 > I recreate a simple version of the game Doodle Jump and add an AI to learn how to play it through NEAT.
 
 ## Table of contents
@@ -14,8 +14,8 @@
 This simple version of Doodle Jump includes everything but black holes, springs, jet packs, helicopter hats, and shooting. NEAT (NeuroEvolution of Augmenting Topologies) is a genetic algorithm that builds up neural networks from scratch and only allows those who do the best in each generation to reproduce and mutate to form the next generation's neural networks.
 
 ## Screenshots
-![Doodle Jump screenshot](./doodlejump.png)
-![Neural Network screenshot](./neuralnet.png)
+![Doodle Jump screenshot](./imgs/doodlejump.png)
+![Neural Network screenshot](./imgs/neuralnet.png)
 
 ## Setup
 All you need is the latest version of Processing and to download the entire repo.
