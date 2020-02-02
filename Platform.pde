@@ -1,4 +1,4 @@
-class Platform {
+class Platform implements Comparable {
   
   int xpos;
   int ypos;
@@ -17,11 +17,11 @@ class Platform {
     this.colour = colour;
     
     // adds in disappearing platforms once score is >= 3000 (black is nonmoving, purple is moving)
-    if (score >= 3000)
+    /*if (score >= 3000)
       if (random(100) >= 80) {
         will_disappear = 1;
         this.colour = color(255, 255, 255);
-      }
+      }*/
   }
         
   void display () {
@@ -34,6 +34,17 @@ class Platform {
       direction *= -1;
         
     xpos += speed * direction;
+  }
+  
+  @Override
+  public int compareTo(Object o) {
+      Platform g = (Platform)o;
+      if (ypos == g.ypos)
+          return 0;
+      else if(ypos < g.ypos)
+          return 1;
+      else
+          return -1;
   }
   
 }
