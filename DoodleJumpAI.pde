@@ -9,6 +9,7 @@ void settings() {
 }
 
 void setup () {
+  frameRate(240);
   notebook = loadImage("dj_background.png");
   ai = new AI();
 
@@ -68,8 +69,8 @@ public class AI implements Environment {
 
     // adjust the player's highestYPos for the fitness calculation in the next block
     for (Genome genome : population)
-      genome.getPlayer().highestYPos = bar - genome.getPlayer().highestYPos;
-
+      genome.getPlayer().highestYPosAdjusted = bar - genome.getPlayer().highestYPos;
+    
     for (Genome genome : population) {
       genome.getPlayer().calculateFitness(bar);
       genome.setFitness(genome.getPlayer().fitness);

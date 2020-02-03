@@ -1,4 +1,4 @@
-class Player {
+class Player implements Comparable {
   
   PImage rightPic = loadImage("right_dj_guy.png");
   PImage leftPic = loadImage("left_dj_guy.png");
@@ -21,11 +21,13 @@ class Player {
   int totalLeftRightMoves = 0;
   int numPassedWalls = 0;
   int lastMove = 1;
-  int sight = 150;
+  int sight = 200;
   int lastMoveNeuralDisplay = -1;
+  int highestYPosAdjusted;
   
   Genome brain;
-  int[] moves = {-1, 0, 1};
+  int[] moves = {0, -1, 1};
+  ArrayList<Platform> nearestPlatforms;
   
   float fitness;
   
@@ -34,22 +36,39 @@ class Player {
   }
   
   int think (ArrayList<Platform> platforms, ArrayList<Villain> villains) {
-    ArrayList<Platform> nearestPlatforms = getNearestPlatforms(platforms);
-    ArrayList<Villain> nearestVillains = getNearestVillains(villains);
+    
+    // only gets new platforms to see if the player has finished its previous play
+    if (yvel == -20)
+      nearestPlatforms = getNearestPlatforms(platforms);
+    Villain nearestVillain = getNearestVillain(villains);
     float[] inputs = new float[NEAT_Config.INPUTS];
     int index = 0;
-    for (Platform plat : nearestPlatforms) {
-      inputs[index] = plat.xpos - xpos;
-      inputs[index + 1] = ypos - plat.ypos;
-      index += 2;
+    
+    if (nearestPlatforms != null) {
+      for (Platform plat : nearestPlatforms) {
+        
+        // index 0 represents distance to travel moving left and index 1 distance to travel moving right
+        if (xpos > plat.xpos) {
+          inputs[index] = xpos - plat.xpos - Platform.len;
+          inputs[index+1] = width - xpos - xlen - plat.xpos;
+        } else {
+          inputs[index] = width - xpos - plat.xpos - Platform.len;
+          inputs[index+1] = plat.xpos - xpos - xlen;
+        }
+        inputs[index+2] = ypos - plat.ypos;
+        index += 3;
+      }
     }
-    for (Villain vil : nearestVillains) {
-      inputs[index] = vil.xpos - xpos;
-      inputs[index + 1] = ypos - vil.ypos;
-      index += 2;
-      
-      if (!villainsSeen.contains(vil))
-        villainsSeen.add(vil);
+    
+    if (nearestVillain != null) {
+      if (xpos > nearestVillain.xpos) {
+        inputs[index] = xpos - nearestVillain.xpos;
+        inputs[index+1] = width - xpos - nearestVillain.xpos;
+      } else {
+        inputs[index] = width - xpos - nearestVillain.xpos;
+        inputs[index+1] = nearestVillain.xpos - xpos;
+      }
+      inputs[index+2] = ypos - nearestVillain.ypos;
     }
     
     float[] moveProbabilities = brain.evaluateNetwork(inputs);
@@ -116,7 +135,7 @@ class Player {
       // self.left <= vil.right, right >= left, bottom >=(below) top bound, bottom <=(above) bottom bound
       if ((xpos <= vil.xpos + Villain.villWidth) && (xpos + xlen >= vil.xpos - 10) && (ypos + ylen >= vil.ypos - 10) && (ypos + ylen <= vil.ypos + Villain.villHeight * 2/5) && (yvel >= 0)) {
         villainsKilled.add(vil);
-        yvel = -22;
+        yvel = -20;
       }
       
       // else if, player dies
@@ -148,7 +167,7 @@ class Player {
     }
       
     // the player dies if it has been stagnant in the last ten seconds
-    if (millis() > timeOfLastInc + 10000)
+    if (millis() > timeOfLastInc + 5000)
       alive = false;
   }
   
@@ -157,6 +176,7 @@ class Player {
     stroke(0);
     strokeWeight(5);
     fill(colour);
+    
     if (lastMove > 0)
       image(rightPic, xpos, ypos);
     else
@@ -165,16 +185,19 @@ class Player {
   
   // calculates the fitness of the player
   void calculateFitness (int bar) {
-    fitness = highestYPos;
+    fitness = highestYPosAdjusted - totalJumps*bar/100;
   }
   
   // returns the platforms closest to the player depending on y height
   ArrayList<Platform> getNearestPlatforms (ArrayList<Platform> platforms) {
     ArrayList<Platform> nearest = new ArrayList<Platform>();
+    ArrayList<Platform> sorted = new ArrayList<Platform>(platforms);
+    Collections.sort(sorted, Collections.reverseOrder());
     
     for (Platform plat : platforms) {
       if (abs(plat.ypos - ypos) < sight)
         nearest.add(plat);
+      
       if (nearest.size() >= 3)
         return nearest;
     }
@@ -182,22 +205,33 @@ class Player {
     return nearest;
   }
   
-  // returns the villains closest to the player depending on y height
-  ArrayList<Villain> getNearestVillains (ArrayList<Villain> villains) {
-    ArrayList<Villain> nearest = new ArrayList<Villain>();
-    
+  // returns the closest villain
+  Villain getNearestVillain (ArrayList<Villain> villains) {
     for (Villain vil : villains) {
       if (abs(vil.ypos - ypos) < sight) {
-        nearest.add(vil);
+        boolean returnVillain = true;
+        
         for (Villain killed : villainsKilled)
           if (killed.equals(vil))
-            nearest.remove(vil);
+            returnVillain = false;
+        
+        if (returnVillain)
+          return vil;
       }
-      if (nearest.size() >= 1)
-        return nearest;
     }
         
-    return nearest;
+    return null;
+  }
+  
+  public int compareTo(Object o) {
+      Player g = (Player)o;
+      
+      if (highestYPos == g.highestYPos)
+          return 0;
+      else if (highestYPos < g.highestYPos)
+          return 1;
+      else
+          return -1;
   }
   
 }

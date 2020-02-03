@@ -2,10 +2,10 @@ class Game {
   
   ArrayList<Platform> platforms;
   ArrayList<Villain> villains;
-  int maxPlatforms = 10;
+  int maxPlatforms = 6;
   int minPlatforms = 6;
   int maxVillains = 1;
-  int ratio = 64;                        // ratio = height/maxPlatforms
+  int ratio = height/maxPlatforms;
   int highestScore = 0;
   int currHighestScore = 0;
   color green = color(144, 238, 144);
@@ -59,7 +59,7 @@ class Game {
       adjustView(highestYPos, players);
       platformManager(lowestYPos, highestYPos);
       if (!disableVillains)
-        villainManager(lowestYPos, highestYPos);
+        villainManager(lowestYPos, highestYPos, gen);
     }
           
     // display the highest score, the current generation number, and the previous generations' highest score
@@ -116,16 +116,15 @@ class Game {
     }
   }
   
-  void villainManager (int lowestYPos, int highestYPos) {
+  void villainManager (int lowestYPos, int highestYPos, int gen) {
 
     // checks if villains have fallen off the bottom of the screen and deletes them
     for (int i = villains.size() - 1; i >= 0; i--)
       if (villains.get(i).ypos > lowestYPos + height)
         villains.remove(i);
     
-    // adds in villains once score is >= 2000
     int[] speeds = {1,2};
-    if (highestScore >= 2000) {
+    if (gen >= 20) {
       if (villains.size() == 0) {
         int lowX = Villain.villWidth/2;
         int highX = (int)(width - Villain.villWidth * 1.5);

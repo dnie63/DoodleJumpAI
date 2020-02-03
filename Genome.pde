@@ -266,13 +266,13 @@ public class Genome implements Comparable {
         for (ConnectionGene c : connectionGeneList) {
             if (rand.nextFloat() < NEAT_Config.WEIGHT_CHANCE) {
                 if (rand.nextFloat() < NEAT_Config.PERTURB_CHANCE) {
-                    c.setWeight(c.getWeight() + (2 * rand.nextFloat() - 1) * NEAT_Config.STEPS);
+                    c.setWeight(c.getWeight() + (randomGaussian() / 50));
                     if (c.getWeight() > 1)
                       c.setWeight(1);
                     else if (c.getWeight() < -1)
                       c.setWeight(-1);
                 } else {
-                  c.setWeight(2 * rand.nextFloat() - 1);
+                  c.setWeight(random(-1, 1));
                 }
             }
         }
